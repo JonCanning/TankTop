@@ -16,6 +16,7 @@ namespace TankTop
         {
             this.webClient = webClient;
             JsConfig.ExcludeTypeInfo = true;
+            JsConfig.EmitCamelCaseNames = true;
         }
 
         public TankTopClient(string baseAddress) : this(new WebClient(baseAddress)) { }

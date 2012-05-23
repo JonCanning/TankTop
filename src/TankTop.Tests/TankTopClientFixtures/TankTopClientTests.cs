@@ -86,7 +86,8 @@ namespace TankTop.Tests.TankTopClientFixtures
         public void When_indexing_a_document()
         {
             var index = new Index { Name = "Index", TankTopClient = tankTopClient };
-            var document = new Document { DocId = "id", Fields = new Dictionary<string, string> { { "key", "value" } } };
+            var document = new Document { DocId = "id" };
+            document.AddField("key", "value");
             index.AddDocument(document);
             var resource = Resources.Indexes_Name_Docs.FormatWith(index.Name);
             webClient.Received().Put(resource, document.ToSerializable());

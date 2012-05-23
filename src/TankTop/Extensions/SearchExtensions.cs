@@ -50,5 +50,23 @@ namespace TankTop.Extensions
         {
             search.Check(x => x.QueryString);
         }
+
+        public static Search WithQueryString(this Search search, string queryString)
+        {
+            search.QueryString = queryString;
+            return search;
+        }
+
+        public static Search WithCategories(this Search search)
+        {
+            search.FetchCategories = true;
+            return search;
+        }
+
+        public static Search WithVariables(this Search search)
+        {
+            search.FetchVariables = true;
+            return search;
+        }
     }
 }

@@ -45,6 +45,12 @@ namespace TankTop.Extensions
             return index.TankTopClient.Search(index.Name, search);
         }
 
+        public static SearchResult Search(this Index index, string queryString)
+        {
+            var search = new Search { QueryString = queryString };
+            return index.TankTopClient.Search(index.Name, search);
+        }
+
         public static void UpdateDocumentVariables(this Index index, string docId, IDictionary<int, float> variables)
         {
             index.TankTopClient.UpdateDocumentVariables(index.Name, docId, variables);

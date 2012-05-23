@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using TankTop.Dto;
 
@@ -20,6 +21,13 @@ namespace TankTop.Extensions
         {
             document.Check(x => x.DocId);
             document.Check(x => x.Fields, x => x.Any());
+        }
+
+        public static Document AddField(this Document document, string key, string value)
+        {
+            document.Fields = document.Fields ?? new Dictionary<string, string>();
+            document.Fields.Add(key, value);
+            return document;
         }
     }
 }

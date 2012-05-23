@@ -6,6 +6,7 @@ obj
 *.user
 packages
 *.suo
+nuget
 
 # mstest test results
 TestResults
