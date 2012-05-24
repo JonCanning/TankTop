@@ -55,12 +55,6 @@ namespace TankTop.Extensions
             query.Check(x => x.QueryString);
         }
 
-        public static Query WithQueryString(this Query query, string queryString)
-        {
-            query.QueryString = queryString;
-            return query;
-        }
-
         public static Query WithCategories(this Query query)
         {
             query.FetchCategories = true;
@@ -108,6 +102,12 @@ namespace TankTop.Extensions
         {
             query.CategoryFilters = query.CategoryFilters ?? new Dictionary<string, IEnumerable<string>>();
             query.CategoryFilters.Add(category, matches);
+            return query;
+        }
+
+        public static Query MatchAnyField(this Query query)
+        {
+            query.MatchAnyField = true;
             return query;
         }
     }
