@@ -42,15 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dto\Document.cs" />
-    <Compile Include="Dto\FunctionDefinition.cs" />
     <Compile Include="Dto\Index.cs" />
     <Compile Include="Dto\ResultDocument.cs" />
-    <Compile Include="Dto\Search.cs" />
+    <Compile Include="Dto\Query.cs" />
     <Compile Include="Dto\SearchResult.cs" />
     <Compile Include="Extensions\DocumentExtensions.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\IndexExtensions.cs" />
-    <Compile Include="Extensions\SearchExtensions.cs" />
+    <Compile Include="Extensions\QueryExtensions.cs" />
     <Compile Include="ITankTopClient.cs" />
     <Compile Include="IWebClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

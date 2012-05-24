@@ -29,5 +29,19 @@ namespace TankTop.Extensions
             document.Fields.Add(key, value);
             return document;
         }
+
+        public static Document AddVariable(this Document document, int key, float value)
+        {
+            document.Variables = document.Variables ?? new Dictionary<int, float>();
+            document.Variables.Add(key, value);
+            return document;
+        }
+
+        public static Document AddCategory(this Document document, string key, string value)
+        {
+            document.Categories = document.Categories ?? new Dictionary<string, string>();
+            document.Categories.Add(key, value);
+            return document;
+        }
     }
 }

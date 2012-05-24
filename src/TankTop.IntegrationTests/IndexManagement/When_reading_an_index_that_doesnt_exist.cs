@@ -11,7 +11,7 @@ namespace TankTop.IntegrationTests.IndexManagement
         [Test]
         public void Then_reading_index_should_return_ok()
         {
-            Action action = () => TankTopClient.ReadIndex("Foo");
+            Action action = () => TankTopClient.GetIndex("Foo");
             action.ShouldThrow<WebException>();
         }
     }

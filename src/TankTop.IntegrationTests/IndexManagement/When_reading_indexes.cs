@@ -11,14 +11,14 @@ namespace TankTop.IntegrationTests.IndexManagement
         [Test]
         public void Then_reading_indexes_should_return_ok()
         {
-            TankTopClient.ReadIndexes();
+            TankTopClient.GetIndexes();
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Test]
         public void Then_indexes_should_be_returned()
         {
-            TankTopClient.ReadIndexes().Should().NotBeEmpty();
+            TankTopClient.GetIndexes().Should().NotBeEmpty();
         }
     }
 }

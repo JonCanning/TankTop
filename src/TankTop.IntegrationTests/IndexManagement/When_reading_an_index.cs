@@ -16,7 +16,7 @@ namespace TankTop.IntegrationTests.IndexManagement
         [Test]
         public void Then_reading_index_should_return_ok()
         {
-            TankTopClient.ReadIndex("TankTop");
+            TankTopClient.GetIndex("TankTop");
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }

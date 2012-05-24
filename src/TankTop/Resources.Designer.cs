@@ -133,6 +133,15 @@ namespace TankTop {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /v1/indexes/{0}/promote.
+        /// </summary>
+        public static string Indexes_Name_Promote {
+            get {
+                return ResourceManager.GetString("Indexes_Name_Promote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /v1/indexes/{0}/search.
         /// </summary>
         public static string Indexes_Name_Search {

@@ -15,14 +15,14 @@ namespace TankTop.IntegrationTests.Categories
         public void Then_categories_should_be_returned()
         {
             var index = TankTopClient.CreateIndex("TankTop");
-            var document = new Document { DocId = "id", Fields = new Dictionary<string, string> { { "key", "value" } } };
+            var document = new Document("id") { Fields = new Dictionary<string, string> { { "key", "value" } } };
             index.AddDocument(document);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
-            var search = new Search { QueryString = "key:value", FetchCategories = true };
+            var search = new Query("key:value").WithCategories();
             var searchResult = index.Search(search);
             searchResult.Results.First().Categories.Should().BeNull();
 
-            index.UpdateDocumentCategories("id", new Dictionary<string, string> { { "cat", "val" } });
+            index.UpdateCategories("id", new Dictionary<string, string> { { "cat", "val" } });
 
             searchResult = index.Search(search);
             searchResult.Results.First().Categories["cat"].Should().Be("val");

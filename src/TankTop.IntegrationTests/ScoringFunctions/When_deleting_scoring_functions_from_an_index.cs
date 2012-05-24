@@ -15,13 +15,13 @@ namespace TankTop.IntegrationTests.ScoringFunctions
             index.CreateFunction(1, "age");
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var functions = index.ReadFunctions();
+            var functions = index.GetFunctions();
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             functions[1].Should().Be("age");
 
             index.DeleteFunction(1);
 
-            functions = index.ReadFunctions();
+            functions = index.GetFunctions();
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             functions.ContainsKey(1).Should().BeFalse();
         }

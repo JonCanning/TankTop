@@ -26,7 +26,7 @@ namespace TankTop
             get { return webClient.StatusCode; }
         }
 
-        public IEnumerable<Index> ReadIndexes()
+        public IEnumerable<Index> GetIndexes()
         {
             var resource = Resources.Indexes;
             var dictionary = webClient.Get<IDictionary<string, Index>>(resource);
@@ -56,22 +56,23 @@ namespace TankTop
             return index;
         }
 
-        public Index ReadIndex(string indexName)
+        public Index GetIndex(string indexName)
         {
             var resource = Resources.Indexes_Name.FormatWith(indexName);
             var index = webClient.Get<Index>(resource);
             index.Name = indexName;
+            index.TankTopClient = this;
             return index;
         }
 
-        public void CreateDocument(string indexName, Document document)
+        public void AddDocument(string indexName, Document document)
         {
             document.Check();
             var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
             webClient.Put(resource, document.ToSerializable());
         }
 
-        public void CreateDocuments(string indexName, IEnumerable<Document> documents)
+        public void AddDocuments(string indexName, params Document[] documents)
         {
             foreach (var document in documents)
             {
@@ -83,62 +84,85 @@ namespace TankTop
 
         public void DeleteDocument(string indexName, string docId)
         {
-            var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
-            webClient.Delete(resource, new { docid = docId });
+            DeleteDocuments(indexName, docId);
+            // var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
+            // webClient.Delete(resource, new { docid = docId });
         }
 
-        public void DeleteDocuments(string indexName, IEnumerable<string> docIds)
+        public void DeleteDocuments(string indexName, params string[] docIds)
         {
             var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
             var deleteDocuments = docIds.Select(x => new { docid = x });
             webClient.Delete(resource, deleteDocuments);
         }
 
-        public void UpdateDocumentVariables(string indexName, string docId, IDictionary<int, float> variables)
+        public void DeleteDocuments(string indexName, Query query)
         {
-            var resource = Resources.Indexes_Name_Docs_Variables.FormatWith(indexName);
-            webClient.Put(resource, new { docid = docId, variables = variables });
+            var searchQueryString = SearchQueryString(indexName, query);
+            webClient.Delete(searchQueryString);
         }
 
-        public void UpdateDocumentCategories(string indexName, string docId, IDictionary<string, string> categories)
+        public void UpdateVariables(string indexName, string docId, params float[] variables)
+        {
+            var resource = Resources.Indexes_Name_Docs_Variables.FormatWith(indexName);
+            var dictionary = new Dictionary<int, float>();
+            for (var i = 0; i < variables.Count(); i++)
+            {
+                dictionary.Add(i, variables[i]);
+            }
+            webClient.Put(resource, new { docid = docId, variables = dictionary });
+        }
+
+        public void UpdateCategories(string indexName, string docId, IDictionary<string, string> categories)
         {
             var resource = Resources.Indexes_Name_Docs_Categories.FormatWith(indexName);
             webClient.Put(resource, new { docid = docId, categories = categories });
         }
 
-        public IDictionary<int, string> ReadIndexFunctions(string indexName)
+        public IDictionary<int, string> GetFunctions(string indexName)
         {
             var resource = Resources.Indexes_Name_Functions.FormatWith(indexName);
-            var functions = webClient.Get<IEnumerable<FunctionDefinition>>(resource);
-            return functions.ToDictionary(x => x.Num, x => x.Definition);
+            return webClient.Get<IDictionary<int, string>>(resource);
         }
 
-        public void CreateIndexFunction(string indexName, int functionNumber, string functionDefinition)
+        public void AddFunction(string indexName, int functionNumber, string functionDefinition)
         {
             var resource = Resources.Indexes_Name_Functions_Num.FormatWith(indexName, functionNumber);
 
             webClient.Put(resource, new { definition = functionDefinition });
         }
 
-        public void DeleteIndexFunction(string indexName, int functionNumber)
+        public void DeleteFunction(string indexName, int functionNumber)
         {
             var resource = Resources.Indexes_Name_Functions_Num.FormatWith(indexName, functionNumber);
             webClient.Delete(resource);
         }
 
-        public SearchResult Search(string indexName, Search search)
+        public SearchResult Search(string indexName, Query query)
         {
-            search.Check();
-            var resource = Resources.Indexes_Name_Search.FormatWith(indexName);
-            var queryString = search.ToQueryString();
-            var resourceAndQueryString = "{0}?{1}".FormatWith(resource, queryString);
-            var searchResult = webClient.Get<SearchResult>(resourceAndQueryString);
+
+            var searchQueryString = SearchQueryString(indexName, query);
+            var searchResult = webClient.Get<SearchResult>(searchQueryString);
             if (searchResult.IsNotNull() && searchResult.Results.IsNotNull() && searchResult.Results.Any())
             {
                 var resultDocuments = JsonObject.Parse(webClient.Response).ArrayObjects("results").ConvertAll(x => ResultDocument(searchResult, x));
                 searchResult.Results = resultDocuments;
             }
             return searchResult;
+        }
+
+        public void Promote(string indexName, string docId, string query)
+        {
+            var resource = Resources.Indexes_Name_Promote.FormatWith(indexName);
+            webClient.Put(resource, new { docid = docId, query });
+        }
+
+        static string SearchQueryString(string indexName, Query query)
+        {
+            var resource = Resources.Indexes_Name_Search.FormatWith(indexName);
+            query.Check();
+            var queryString = query.ToQueryString();
+            return "{0}?{1}".FormatWith(resource, queryString);
         }
 
         ResultDocument ResultDocument(SearchResult searchResult, JsonObject jsonObject)
@@ -149,14 +173,12 @@ namespace TankTop
             const string variable = "variable_";
             if (webClient.Response.Contains(variable))
             {
-                resultDocument.Variables = new Dictionary<int, float>();
+                resultDocument.Variables = new List<float>();
                 foreach (var field in fields)
                 {
                     if (!field.StartsWith(variable)) continue;
-                    var intString = field.Replace(variable, string.Empty);
-                    var i = int.Parse(intString);
                     var f = jsonObject.Get<float>(field);
-                    resultDocument.Variables.Add(i, f);
+                    resultDocument.Variables.Add(f);
                 }
                 fields.RemoveAll(x => x.StartsWith(variable));
             }

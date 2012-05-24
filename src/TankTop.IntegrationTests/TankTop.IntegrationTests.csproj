@@ -59,6 +59,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Indexing\When_deleting_a_document.cs" />
     <Compile Include="Indexing\When_deleting_a_document_batch.cs" />
+    <Compile Include="Indexing\When_deleting_documents_by_query.cs" />
     <Compile Include="Indexing\When_indexing_a_document.cs" />
     <Compile Include="Indexing\When_indexing_a_document_batch.cs" />
     <Compile Include="Indexing\When_searching_for_a_document.cs" />

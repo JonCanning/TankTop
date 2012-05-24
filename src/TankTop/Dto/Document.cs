@@ -4,6 +4,11 @@ namespace TankTop.Dto
 {
     public class Document
     {
+        public Document(string docId)
+        {
+            DocId = docId;
+        }
+
         public string DocId { get; set; }
         public IDictionary<string, string> Fields { get; set; }
         public IDictionary<string, string> Categories { get; set; }

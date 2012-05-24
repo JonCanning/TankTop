@@ -141,6 +141,9 @@
   <data name="Indexes_Name_Functions_Num" xml:space="preserve">
     <value>/v1/indexes/{0}/functions/{1}</value>
   </data>
+  <data name="Indexes_Name_Promote" xml:space="preserve">
+    <value>/v1/indexes/{0}/promote</value>
+  </data>
   <data name="Indexes_Name_Search" xml:space="preserve">
     <value>/v1/indexes/{0}/search</value>
   </data>

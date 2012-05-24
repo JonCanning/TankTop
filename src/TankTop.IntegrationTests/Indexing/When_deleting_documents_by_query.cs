@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using FluentAssertions;
 using NUnit.Framework;
@@ -8,10 +8,10 @@ using TankTop.Extensions;
 namespace TankTop.IntegrationTests.Indexing
 {
     [TestFixture]
-    class When_indexing_a_document_batch : IntegrationTest
+    class When_deleting_documents_by_query : IntegrationTest
     {
         [Test]
-        public void Then_documents_should_be_indexed()
+        public void Then_documents_should_be_deleted()
         {
             var index = TankTopClient.CreateIndex("TankTop");
             var documents = new[] {
@@ -20,6 +20,14 @@ namespace TankTop.IntegrationTests.Indexing
                                   };
             index.AddDocuments(documents);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
+            var search = new Query("key:value").WithFields("*");
+            var searchResult = index.Search(search);
+            searchResult.Results.Count().Should().Be(2);
+
+            index.DeleteDocuments(search);
+            TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
+            searchResult = index.Search(search);
+            searchResult.Results.Count().Should().Be(0);
         }
     }
 }

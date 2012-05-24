@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using FluentAssertions;
@@ -15,16 +14,17 @@ namespace TankTop.IntegrationTests.Indexing
         public void Then_documents_should_be_deleted()
         {
             var index = TankTopClient.CreateIndex("TankTop");
-            var documents = new[]{ 
-                                     new Document { DocId = "1", Fields = new Dictionary<string, string> { { "key", "value" } } },
-                                     new Document { DocId = "2", Fields = new Dictionary<string, string> { { "key", "value" } } }};
+            var documents = new[] {
+                                      new Document("1").AddField("key", "value"),
+                                      new Document("2").AddField("key", "value")
+                                  };
             index.AddDocuments(documents);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
-            var search = new Search { QueryString = "key:value", Fetch = new[] { "*" } };
+            var search = new Query("key:value").WithFields("*");
             var searchResult = index.Search(search);
             searchResult.Results.Count().Should().Be(2);
 
-            index.DeleteDocuments(new[] { "1", "2" });
+            index.DeleteDocuments("1", "2");
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             searchResult = index.Search(search);
             searchResult.Results.Count().Should().Be(0);

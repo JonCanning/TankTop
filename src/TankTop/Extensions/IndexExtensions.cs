@@ -7,12 +7,12 @@ namespace TankTop.Extensions
     {
         public static void AddDocument(this Index index, Document document)
         {
-            index.TankTopClient.CreateDocument(index.Name, document);
+            index.TankTopClient.AddDocument(index.Name, document);
         }
 
-        public static void AddDocuments(this Index index, IEnumerable<Document> documents)
+        public static void AddDocuments(this Index index, params Document[] documents)
         {
-            index.TankTopClient.CreateDocuments(index.Name, documents);
+            index.TankTopClient.AddDocuments(index.Name, documents);
         }
 
         public static void DeleteDocument(this Index index, string docId)
@@ -20,45 +20,55 @@ namespace TankTop.Extensions
             index.TankTopClient.DeleteDocument(index.Name, docId);
         }
 
-        public static void DeleteDocuments(this Index index, IEnumerable<string> docIds)
+        public static void DeleteDocuments(this Index index, params string[] docIds)
         {
             index.TankTopClient.DeleteDocuments(index.Name, docIds);
         }
 
-        public static IDictionary<int, string> ReadFunctions(this Index index)
+        public static void DeleteDocuments(this Index index, Query query)
         {
-            return index.TankTopClient.ReadIndexFunctions(index.Name);
+            index.TankTopClient.DeleteDocuments(index.Name, query);
+        }
+
+        public static IDictionary<int, string> GetFunctions(this Index index)
+        {
+            return index.TankTopClient.GetFunctions(index.Name);
         }
 
         public static void CreateFunction(this Index index, int functionNumber, string functionDefinition)
         {
-            index.TankTopClient.CreateIndexFunction(index.Name, functionNumber, functionDefinition);
+            index.TankTopClient.AddFunction(index.Name, functionNumber, functionDefinition);
         }
 
         public static void DeleteFunction(this Index index, int functionNumber)
         {
-            index.TankTopClient.DeleteIndexFunction(index.Name, functionNumber);
+            index.TankTopClient.DeleteFunction(index.Name, functionNumber);
         }
 
-        public static SearchResult Search(this Index index, Search search)
+        public static SearchResult Search(this Index index, Query query)
         {
-            return index.TankTopClient.Search(index.Name, search);
+            return index.TankTopClient.Search(index.Name, query);
         }
 
         public static SearchResult Search(this Index index, string queryString)
         {
-            var search = new Search { QueryString = queryString };
+            var search = new Query(queryString);
             return index.TankTopClient.Search(index.Name, search);
         }
 
-        public static void UpdateDocumentVariables(this Index index, string docId, IDictionary<int, float> variables)
+        public static void UpdateVariables(this Index index, string docId, params float[] variables)
         {
-            index.TankTopClient.UpdateDocumentVariables(index.Name, docId, variables);
+            index.TankTopClient.UpdateVariables(index.Name, docId, variables);
         }
 
-        public static void UpdateDocumentCategories(this Index index, string docId, IDictionary<string, string> categories)
+        public static void UpdateCategories(this Index index, string docId, IDictionary<string, string> categories)
         {
-            index.TankTopClient.UpdateDocumentCategories(index.Name, docId, categories);
+            index.TankTopClient.UpdateCategories(index.Name, docId, categories);
+        }
+
+        public static void Promote(this Index index, string docId, string query)
+        {
+            index.TankTopClient.Promote(index.Name, docId, query);
         }
     }
 }

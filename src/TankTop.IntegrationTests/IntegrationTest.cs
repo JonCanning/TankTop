@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using TankTop.Dto;
 
 namespace TankTop.IntegrationTests
 {
@@ -8,7 +9,8 @@ namespace TankTop.IntegrationTests
 
         protected IntegrationTest()
         {
-            TankTopClient = new TankTopClient("");
+            //TankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
+            TankTopClient = new TankTopClient("http://:f8XQxRl2B5xQxC@d3px3.api.searchify.com");
         }
 
         [TestFixtureSetUp]
@@ -19,7 +21,8 @@ namespace TankTop.IntegrationTests
 
         void DeleteIndex()
         {
-            Extensions.Try(() => TankTopClient.DeleteIndex("TankTop"));
+            TankTopClient.DeleteDocuments("TankTop", new Query("key:v*"));
+            //Extensions.Try(() => TankTopClient.DeleteIndex("TankTop"));
         }
 
         [TestFixtureTearDown]

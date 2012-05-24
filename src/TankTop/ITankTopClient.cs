@@ -7,19 +7,23 @@ namespace TankTop
     public interface ITankTopClient
     {
         HttpStatusCode StatusCode { get; }
-        IEnumerable<Index> ReadIndexes();
+
+        IEnumerable<Index> GetIndexes();
         void DeleteIndex(string indexName);
         Index CreateIndex(string indexName, bool publicSearch = false);
-        Index ReadIndex(string indexName);
-        void CreateDocument(string indexName, Document document);
-        void CreateDocuments(string indexName, IEnumerable<Document> documents);
+        Index GetIndex(string indexName);
+        IDictionary<int, string> GetFunctions(string indexName);
+        void AddFunction(string indexName, int functionNumber, string functionDefinition);
+        void DeleteFunction(string indexName, int functionNumber);
+
+        void AddDocument(string indexName, Document document);
+        void AddDocuments(string indexName, params Document[] documents);
         void DeleteDocument(string indexName, string docId);
-        void DeleteDocuments(string indexName, IEnumerable<string> docIds);
-        void UpdateDocumentVariables(string indexName, string docId, IDictionary<int, float> variables);
-        void UpdateDocumentCategories(string indexName, string docId, IDictionary<string, string> categories);
-        IDictionary<int, string> ReadIndexFunctions(string indexName);
-        void CreateIndexFunction(string indexName, int functionNumber, string functionDefinition);
-        void DeleteIndexFunction(string indexName, int functionNumber);
-        SearchResult Search(string indexName, Search search);
+        void DeleteDocuments(string indexName, params string[] docIds);
+        void DeleteDocuments(string indexName, Query query);
+        void UpdateVariables(string indexName, string docId, params float[] variables);
+        void UpdateCategories(string indexName, string docId, IDictionary<string, string> categories);
+        SearchResult Search(string indexName, Query query);
+        void Promote(string indexName, string docId, string query);
     }
 }

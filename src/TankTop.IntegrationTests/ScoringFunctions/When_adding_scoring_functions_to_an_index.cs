@@ -15,7 +15,7 @@ namespace TankTop.IntegrationTests.ScoringFunctions
             index.CreateFunction(1, "age");
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var functions = index.ReadFunctions();
+            var functions = index.GetFunctions();
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             functions[1].Should().Be("age");
         }

@@ -2,8 +2,13 @@ using System.Collections.Generic;
 
 namespace TankTop.Dto
 {
-    public class Search
+    public class Query
     {
+        public Query(string queryString)
+        {
+            QueryString = queryString;
+        }
+
         public string QueryString { get; set; }
         public int? Start { get; set; }
         public int? Len { get; set; }
@@ -16,5 +21,6 @@ namespace TankTop.Dto
         public IDictionary<string, IEnumerable<string>> CategoryFilters { get; set; }
         public IDictionary<int, string> VariableFilters { get; set; }
         public IDictionary<int, string> FunctionFilters { get; set; }
+        public bool? MatchAnyField { get; set; }
     }
 }
