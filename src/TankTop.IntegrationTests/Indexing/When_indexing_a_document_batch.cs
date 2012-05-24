@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Net;
 using FluentAssertions;
 using NUnit.Framework;
@@ -13,12 +12,11 @@ namespace TankTop.IntegrationTests.Indexing
         [Test]
         public void Then_documents_should_be_indexed()
         {
-            var index = TankTopClient.CreateIndex("TankTop");
             var documents = new[] {
                                       new Document("1").AddField("key", "value"),
                                       new Document("2").AddField("key", "value")
                                   };
-            index.AddDocuments(documents);
+            Index.AddDocuments(documents);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }

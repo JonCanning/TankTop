@@ -12,11 +12,10 @@ namespace TankTop.IntegrationTests.Indexing
         [Test]
         public void Then_document_should_be_returned()
         {
-            var index = TankTopClient.CreateIndex("TankTop");
             var document = new Document("id").AddField("key", "value");
-            index.AddDocument(document);
+            Index.AddDocument(document);
             var search = new Query("key:value").WithFields("*");
-            var searchResult = index.Search(search);
+            var searchResult = Index.Search(search);
             searchResult.Results.Count().Should().Be(1);
             searchResult.Results.First().Fields["key"].Should().Be("value");
         }
@@ -44,12 +43,11 @@ namespace TankTop.IntegrationTests.Indexing
         [Test]
         public void Then_document_should_be_returned()
         {
-            var index = TankTopClient.CreateIndex("TankTop");
             var doc1 = new Document("id1").AddField("key", "value1").AddCategory("cat", "1");
             var doc2 = new Document("id2").AddField("key", "value2").AddCategory("cat", "2");
-            index.AddDocuments(doc1, doc2);
+            Index.AddDocuments(doc1, doc2);
             var search = new Query("key:value*").WithFields("*").WithCategoryFilter("cat", "1");
-            var searchResult = index.Search(search);
+            var searchResult = Index.Search(search);
             searchResult.Results.Count().Should().Be(1);
             searchResult.Results.First().Fields["key"].Should().Be("value1");
         }

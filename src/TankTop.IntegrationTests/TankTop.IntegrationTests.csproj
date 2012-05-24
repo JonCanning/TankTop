@@ -63,7 +63,6 @@
     <Compile Include="Indexing\When_indexing_a_document.cs" />
     <Compile Include="Indexing\When_indexing_a_document_batch.cs" />
     <Compile Include="Indexing\When_searching_for_a_document.cs" />
-    <Compile Include="IndexManagement\When_creating_an_index.cs" />
     <Compile Include="IndexManagement\When_reading_an_index.cs" />
     <Compile Include="IndexManagement\When_reading_an_index_that_doesnt_exist.cs" />
     <Compile Include="IndexManagement\When_reading_indexes.cs" />
@@ -72,6 +71,7 @@
     <Compile Include="ScoringFunctions\When_adding_scoring_functions_to_an_index.cs" />
     <Compile Include="ScoringFunctions\When_deleting_scoring_functions_from_an_index.cs" />
     <Compile Include="ScoringVariables\When_adding_scoring_variables_to_a_document.cs" />
+    <Compile Include="SetUpFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

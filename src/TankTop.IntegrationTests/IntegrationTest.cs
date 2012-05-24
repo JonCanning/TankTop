@@ -1,33 +1,24 @@
+using System.Threading;
 using NUnit.Framework;
 using TankTop.Dto;
+using TankTop.Extensions;
 
 namespace TankTop.IntegrationTests
 {
     abstract class IntegrationTest
     {
-        protected readonly ITankTopClient TankTopClient;
-
-        protected IntegrationTest()
-        {
-            TankTopClient = new TankTopClient("");
-        }
+        protected Index Index = SetUpFixture.Index;
+        protected readonly ITankTopClient TankTopClient = SetUpFixture.TankTopClient;
 
         [TestFixtureSetUp]
-        public virtual void TestFixtureSetUp()
+        protected void TestFixtureSetUp()
         {
-            DeleteIndex();
-        }
-
-        void DeleteIndex()
-        {
-            TankTopClient.DeleteDocuments("TankTop", new Query("key:v*"));
-            //Extensions.Try(() => TankTopClient.DeleteIndex("TankTop"));
-        }
-
-        [TestFixtureTearDown]
-        public virtual void TestFixtureTearDown()
-        {
-            DeleteIndex();
+            while (!Index.Started)
+            {
+                Thread.Sleep(1000);
+                Index = TankTopClient.GetIndex("TankTop");
+            }
+            Index.DeleteDocuments(new Query("key:v*"));
         }
     }
 }

@@ -13,9 +13,8 @@ namespace TankTop.IntegrationTests.Indexing
         [Test]
         public void Then_document_should_be_indexed()
         {
-            var index = TankTopClient.CreateIndex("TankTop");
             var document = new Document("id").AddField("key", "value");
-            index.AddDocument(document);
+            Index.AddDocument(document);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }

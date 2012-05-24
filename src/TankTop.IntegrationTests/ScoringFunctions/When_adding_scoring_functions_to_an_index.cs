@@ -11,11 +11,10 @@ namespace TankTop.IntegrationTests.ScoringFunctions
         [Test]
         public void Then_functions_should_be_stored()
         {
-            var index = TankTopClient.CreateIndex("TankTop");
-            index.CreateFunction(1, "age");
+            Index.CreateFunction(1, "age");
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var functions = index.GetFunctions();
+            var functions = Index.GetFunctions();
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             functions[1].Should().Be("age");
         }

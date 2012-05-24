@@ -11,17 +11,16 @@ namespace TankTop.IntegrationTests.ScoringFunctions
         [Test]
         public void Then_functions_should_be_deleted()
         {
-            var index = TankTopClient.CreateIndex("TankTop");
-            index.CreateFunction(1, "age");
+            Index.CreateFunction(1, "age");
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var functions = index.GetFunctions();
+            var functions = Index.GetFunctions();
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             functions[1].Should().Be("age");
 
-            index.DeleteFunction(1);
+            Index.DeleteFunction(1);
 
-            functions = index.GetFunctions();
+            functions = Index.GetFunctions();
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             functions.ContainsKey(1).Should().BeFalse();
         }

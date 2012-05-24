@@ -14,17 +14,16 @@ namespace TankTop.IntegrationTests.ScoringVariables
         [Test]
         public void Then_variables_should_be_returned()
         {
-            var index = TankTopClient.CreateIndex("TankTop");
             var document = new Document("id").AddField("key", "value");
-            index.AddDocument(document);
+            Index.AddDocument(document);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             var search = new Query("key:value").WithVariables();
-            var searchResult = index.Search(search);
-            //searchResult.Results.First().Variables.Should().BeNull();
+            var searchResult = Index.Search(search);
+            searchResult.Results.First().Variables.Should().BeNull();
 
-            index.UpdateVariables("id", new Dictionary<int, float> { {2, 5} });
+            Index.UpdateVariables("id", new Dictionary<int, float> { {2, 5} });
 
-            searchResult = index.Search(search);
+            searchResult = Index.Search(search);
             searchResult.Results.First().Variables[2].Should().BeInRange(5, 5);
         }
     }
