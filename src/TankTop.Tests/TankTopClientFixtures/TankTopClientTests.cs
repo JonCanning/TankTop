@@ -153,14 +153,12 @@ namespace TankTop.Tests.TankTopClientFixtures
         [Test]
         public void When_deleting_documents_by_search()
         {
-            var resource = Resources.Indexes_Name_Docs.FormatWith("Index");
+            var resource = Resources.Indexes_Name_Search.FormatWith("Index");
 
             var index = new Index { Name = "Index", TankTopClient = tankTopClient };
 
             var search = new Query("key:value");
             index.DeleteDocuments(search);
-
-            var resourceQuery = "{0}?q={1}&fetch_variables=true&category_filters={2}&var1=1&filter_docvar1=2:3&filter_function2=3:4".FormatWith(resource, search.QueryString.UrlEncode(), "{category:[one,two]}");
 
             resource += "?q=key%3avalue";
             webClient.Received().Delete(resource);
@@ -171,7 +169,7 @@ namespace TankTop.Tests.TankTopClientFixtures
         {
             var resource = Resources.Indexes_Name_Docs_Variables.FormatWith("Index");
 
-            tankTopClient.UpdateVariables("Index", "id", 1);
+            tankTopClient.UpdateVariables("Index", "id", new Dictionary<int, float> { { 0, 1 } });
 
             webClient.Received().Put(resource, Arg.Is<object>(x => x.GetValue<string>("docid") == "id"));
         }
@@ -182,15 +180,9 @@ namespace TankTop.Tests.TankTopClientFixtures
             var resource = Resources.Indexes_Name_Docs_Variables.FormatWith("Index");
             var index = new Index { Name = "Index", TankTopClient = tankTopClient };
 
-            var variables = new float[] { 1, 2, 3 };
-            index.UpdateVariables("id", variables);
-            var dictionary = new Dictionary<int, float>();
-            for (var i = 0; i < variables.Count(); i++)
-            {
-                dictionary.Add(i, variables[i]);
-            }
+            index.UpdateVariables("id", new Dictionary<int, float>());
 
-            webClient.Received().Put(resource, Arg.Is<object>(x => x.GetValue<string>("docid") == "id" && x.GetValue<IDictionary<int, float>>("variables") == dictionary));
+            webClient.Received().Put(resource, Arg.Is<object>(x => x.GetValue<string>("docid") == "id"));
         }
 
         [Test]
@@ -295,8 +287,8 @@ namespace TankTop.Tests.TankTopClientFixtures
 
             tankTopClient.Search("Index", search);
 
-            var queryString = "q={0}&fetch_variables=true&category_filters={1}&var1=1&filter_docvar1=2:3&filter_function2=3:4".FormatWith(search.QueryString, "{category:[one,two]}").UrlEncode();
-            resource += "?" + queryString;
+            var queryString = @"?q=field%3avalue&fetch_variables=true&category_filters=""%7b%22category%22%3a%5b%22one%22,%22two%22%5d%7d""%26var1%3d1%26filter%5fdocvar1%3d2%3a3%26filter%5ffunction2%3d3%3a4";
+            resource += queryString;
             webClient.Received().Get<SearchResult>(resource);
         }
 
@@ -316,8 +308,9 @@ namespace TankTop.Tests.TankTopClientFixtures
             webClient.Get<SearchResult>(Arg.Any<string>()).Returns(new SearchResult());
             var index = new Index { Name = "Index", TankTopClient = tankTopClient };
             index.Search(search);
-            var resourceQuery = "{0}?q={1}&fetch_variables=true&category_filters={2}&var1=1&filter_docvar1=2:3&filter_function2=3:4".FormatWith(resource, search.QueryString.UrlEncode(), "{category:[one,two]}");
-            webClient.Received().Get<SearchResult>(resourceQuery);
+            var queryString = @"?q=field%3avalue&fetch_variables=true&category_filters=""%7b%22category%22%3a%5b%22one%22,%22two%22%5d%7d""%26var1%3d1%26filter%5fdocvar1%3d2%3a3%26filter%5ffunction2%3d3%3a4";
+            resource += queryString;
+            webClient.Received().Get<SearchResult>(resource);
         }
 
         [Test]

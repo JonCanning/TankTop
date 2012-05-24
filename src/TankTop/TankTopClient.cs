@@ -84,9 +84,8 @@ namespace TankTop
 
         public void DeleteDocument(string indexName, string docId)
         {
-            DeleteDocuments(indexName, docId);
-            // var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
-            // webClient.Delete(resource, new { docid = docId });
+            var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
+            webClient.Delete(resource, new { docid = docId });
         }
 
         public void DeleteDocuments(string indexName, params string[] docIds)
@@ -102,15 +101,10 @@ namespace TankTop
             webClient.Delete(searchQueryString);
         }
 
-        public void UpdateVariables(string indexName, string docId, params float[] variables)
+        public void UpdateVariables(string indexName, string docId, IDictionary<int, float> variables)
         {
             var resource = Resources.Indexes_Name_Docs_Variables.FormatWith(indexName);
-            var dictionary = new Dictionary<int, float>();
-            for (var i = 0; i < variables.Count(); i++)
-            {
-                dictionary.Add(i, variables[i]);
-            }
-            webClient.Put(resource, new { docid = docId, variables = dictionary });
+            webClient.Put(resource, new { docid = docId, variables });
         }
 
         public void UpdateCategories(string indexName, string docId, IDictionary<string, string> categories)
@@ -174,9 +168,8 @@ namespace TankTop
             if (webClient.Response.Contains(variable))
             {
                 resultDocument.Variables = new List<float>();
-                foreach (var field in fields)
+                foreach (var field in fields.Where(x => x.StartsWith(variable)).OrderBy(x => x))
                 {
-                    if (!field.StartsWith(variable)) continue;
                     var f = jsonObject.Get<float>(field);
                     resultDocument.Variables.Add(f);
                 }
@@ -187,9 +180,8 @@ namespace TankTop
             if (webClient.Response.Contains(category))
             {
                 resultDocument.Categories = new Dictionary<string, string>();
-                foreach (var field in fields)
+                foreach (var field in fields.Where(x => x.StartsWith(category)))
                 {
-                    if (!field.StartsWith(category)) continue;
                     var categoryName = field.Replace(category, string.Empty);
                     var categoryValue = jsonObject.Get<string>(field);
                     resultDocument.Categories.Add(categoryName, categoryValue);

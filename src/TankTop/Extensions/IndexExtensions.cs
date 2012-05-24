@@ -56,7 +56,7 @@ namespace TankTop.Extensions
             return index.TankTopClient.Search(index.Name, search);
         }
 
-        public static void UpdateVariables(this Index index, string docId, params float[] variables)
+        public static void UpdateVariables(this Index index, string docId, IDictionary<int, float> variables)
         {
             index.TankTopClient.UpdateVariables(index.Name, docId, variables);
         }

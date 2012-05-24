@@ -9,8 +9,7 @@ namespace TankTop.IntegrationTests
 
         protected IntegrationTest()
         {
-            //TankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
-            TankTopClient = new TankTopClient("http://:f8XQxRl2B5xQxC@d3px3.api.searchify.com");
+            TankTopClient = new TankTopClient("");
         }
 
         [TestFixtureSetUp]

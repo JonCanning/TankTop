@@ -21,7 +21,7 @@ namespace TankTop
         void DeleteDocument(string indexName, string docId);
         void DeleteDocuments(string indexName, params string[] docIds);
         void DeleteDocuments(string indexName, Query query);
-        void UpdateVariables(string indexName, string docId, params float[] variables);
+        void UpdateVariables(string indexName, string docId, IDictionary<int, float> variables);
         void UpdateCategories(string indexName, string docId, IDictionary<string, string> categories);
         SearchResult Search(string indexName, Query query);
         void Promote(string indexName, string docId, string query);

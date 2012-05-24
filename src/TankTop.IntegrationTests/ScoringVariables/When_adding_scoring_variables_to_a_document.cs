@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using FluentAssertions;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace TankTop.IntegrationTests.ScoringVariables
             var searchResult = index.Search(search);
             //searchResult.Results.First().Variables.Should().BeNull();
 
-            index.UpdateVariables("id", 0, 0, 5);
+            index.UpdateVariables("id", new Dictionary<int, float> { {2, 5} });
 
             searchResult = index.Search(search);
             searchResult.Results.First().Variables[2].Should().BeInRange(5, 5);
