@@ -23,7 +23,7 @@ namespace TankTop.Extensions
                                         match_any_field = query.MatchAnyField
                                     };
             var queryString = QueryStringSerializer.SerializeToString(searchQueryString);
-            var stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder(queryString);
             if (query.Var.IsNotNull())
             {
                 foreach (var @var in query.Var)
@@ -45,14 +45,13 @@ namespace TankTop.Extensions
                     stringBuilder.Append("&filter_function{0}={1}".FormatWith(functionFilter.Key, functionFilter.Value));
                 }
             }
-            var encoded = stringBuilder.ToString().UrlEncode();
-            queryString += encoded;
-            return queryString;
+            return stringBuilder.ToString();
         }
 
         public static void Check(this Query query)
         {
             query.Check(x => x.QueryString);
+
         }
 
         public static Query WithCategories(this Query query)
@@ -70,6 +69,12 @@ namespace TankTop.Extensions
         public static Query WithFields(this Query query, params string[] fields)
         {
             query.Fetch = fields;
+            return query;
+        }
+
+        public static Query WithSnippetFromFields(this Query query, params string[] fields)
+        {
+            query.Snippet = fields;
             return query;
         }
 

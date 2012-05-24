@@ -243,7 +243,7 @@ namespace TankTop.Tests.TankTopClientFixtures
             var resource = Resources.Indexes_Name_Functions_Num.FormatWith("Index", 0);
             var index = new Index { Name = "Index", TankTopClient = tankTopClient };
 
-            index.CreateFunction(0, "def");
+            index.AddFunction(0, "def");
 
             webClient.Received().Put(resource, Arg.Is<object>(x => x.GetValue<string>("definition") == "def"));
         }
@@ -287,7 +287,7 @@ namespace TankTop.Tests.TankTopClientFixtures
 
             tankTopClient.Search("Index", search);
 
-            var queryString = @"?q=field%3avalue&fetch_variables=true&category_filters=""%7b%22category%22%3a%5b%22one%22,%22two%22%5d%7d""%26var1%3d1%26filter%5fdocvar1%3d2%3a3%26filter%5ffunction2%3d3%3a4";
+            var queryString = @"?q=field%3avalue&fetch_variables=true&category_filters=""%7b%22category%22%3a%5b%22one%22,%22two%22%5d%7d""&var1=1&filter_docvar1=2:3&filter_function2=3:4";
             resource += queryString;
             webClient.Received().Get<SearchResult>(resource);
         }
@@ -308,8 +308,21 @@ namespace TankTop.Tests.TankTopClientFixtures
             webClient.Get<SearchResult>(Arg.Any<string>()).Returns(new SearchResult());
             var index = new Index { Name = "Index", TankTopClient = tankTopClient };
             index.Search(search);
-            var queryString = @"?q=field%3avalue&fetch_variables=true&category_filters=""%7b%22category%22%3a%5b%22one%22,%22two%22%5d%7d""%26var1%3d1%26filter%5fdocvar1%3d2%3a3%26filter%5ffunction2%3d3%3a4";
+            var queryString = @"?q=field%3avalue&fetch_variables=true&category_filters=""%7b%22category%22%3a%5b%22one%22,%22two%22%5d%7d""&var1=1&filter_docvar1=2:3&filter_function2=3:4";
             resource += queryString;
+            webClient.Received().Get<SearchResult>(resource);
+        }
+
+        [Test]
+        public void When_searching_with_snippet()
+        {
+            var resource = Resources.Indexes_Name_Search.FormatWith("Index");
+
+            var search = new Query("field:value").WithSnippetFromFields("field1", "field2");
+
+            var index = new Index { Name = "Index", TankTopClient = tankTopClient };
+            index.Search(search);
+            resource += @"?q=field%3avalue&snippet=""field1,field2""";
             webClient.Received().Get<SearchResult>(resource);
         }
 

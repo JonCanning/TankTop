@@ -18,12 +18,10 @@ namespace TankTop.IntegrationTests.ScoringVariables
             Index.AddDocument(document);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
             var search = new Query("key:value").WithVariables();
+
+            Index.UpdateVariables("id", new Dictionary<int, float> { { 2, 5 } });
+
             var searchResult = Index.Search(search);
-            searchResult.Results.First().Variables.Should().BeNull();
-
-            Index.UpdateVariables("id", new Dictionary<int, float> { {2, 5} });
-
-            searchResult = Index.Search(search);
             searchResult.Results.First().Variables[2].Should().BeInRange(5, 5);
         }
     }

@@ -6,7 +6,7 @@ namespace TankTop.IntegrationTests
     [SetUpFixture]
     class SetUpFixture
     {
-        public static TankTopClient TankTopClient = new TankTopClient("");
+        public static readonly TankTopClient TankTopClient = new TankTopClient("");
         public static Index Index;
 
         [SetUp]

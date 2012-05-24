@@ -122,7 +122,6 @@ namespace TankTop
         public void AddFunction(string indexName, int functionNumber, string functionDefinition)
         {
             var resource = Resources.Indexes_Name_Functions_Num.FormatWith(indexName, functionNumber);
-
             webClient.Put(resource, new { definition = functionDefinition });
         }
 
@@ -185,6 +184,19 @@ namespace TankTop
                     var categoryName = field.Replace(category, string.Empty);
                     var categoryValue = jsonObject.Get<string>(field);
                     resultDocument.Categories.Add(categoryName, categoryValue);
+                }
+                fields.RemoveAll(x => x.StartsWith(category));
+            }
+
+            const string snippet = "snippet_";
+            if (webClient.Response.Contains(snippet))
+            {
+                resultDocument.Snippets = new Dictionary<string, string>();
+                foreach (var field in fields.Where(x => x.StartsWith(snippet)))
+                {
+                    var snippetName = field.Replace(snippet, string.Empty);
+                    var snippetValue = jsonObject.Get<string>(field);
+                    resultDocument.Snippets.Add(snippetName, snippetValue);
                 }
                 fields.RemoveAll(x => x.StartsWith(category));
             }

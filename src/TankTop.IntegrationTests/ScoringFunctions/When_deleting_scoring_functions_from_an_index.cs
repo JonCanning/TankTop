@@ -11,7 +11,7 @@ namespace TankTop.IntegrationTests.ScoringFunctions
         [Test]
         public void Then_functions_should_be_deleted()
         {
-            Index.CreateFunction(1, "age");
+            Index.AddFunction(1, "age");
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var functions = Index.GetFunctions();

@@ -55,6 +55,7 @@ namespace TankTop
                 var responseStream = webResponse.GetResponseStream();
                 var json = new StreamReader(responseStream).ReadToEnd();
                 Response = json;
+                Console.WriteLine(json);
                 return JsonSerializer.DeserializeFromString<T>(json);
             }
         }
@@ -66,6 +67,7 @@ namespace TankTop
 
         HttpWebResponse HttpWebResponse(string resource, string method, object request)
         {
+            Console.WriteLine(resource);
             var webRequest = WebRequest.Create(baseAddress + resource).CastTo<HttpWebRequest>();
             webRequest.Method = method;
             webRequest.Headers = webHeaderCollection;

@@ -35,7 +35,7 @@ namespace TankTop.Extensions
             return index.TankTopClient.GetFunctions(index.Name);
         }
 
-        public static void CreateFunction(this Index index, int functionNumber, string functionDefinition)
+        public static void AddFunction(this Index index, int functionNumber, string functionDefinition)
         {
             index.TankTopClient.AddFunction(index.Name, functionNumber, functionDefinition);
         }

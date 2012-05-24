@@ -62,7 +62,11 @@
     <Compile Include="Indexing\When_deleting_documents_by_query.cs" />
     <Compile Include="Indexing\When_indexing_a_document.cs" />
     <Compile Include="Indexing\When_indexing_a_document_batch.cs" />
+    <Compile Include="Indexing\When_searching_and_filtering_using_categories.cs" />
+    <Compile Include="Indexing\When_searching_and_ordering_with_function.cs" />
     <Compile Include="Indexing\When_searching_for_a_document.cs" />
+    <Compile Include="Indexing\When_searching_for_documents_using_match_any.cs" />
+    <Compile Include="Indexing\When_searching_with_snippet.cs" />
     <Compile Include="IndexManagement\When_reading_an_index.cs" />
     <Compile Include="IndexManagement\When_reading_an_index_that_doesnt_exist.cs" />
     <Compile Include="IndexManagement\When_reading_indexes.cs" />
