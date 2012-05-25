@@ -11,7 +11,7 @@ namespace TankTop.Extensions
         {
             var searchQueryString = new
                                     {
-                                        q = query.QueryString,
+                                        q = query.QueryText,
                                         start = query.Start,
                                         len = query.Len,
                                         function = query.Function,
@@ -50,7 +50,7 @@ namespace TankTop.Extensions
 
         public static void Check(this Query query)
         {
-            query.Check(x => x.QueryString);
+            query.Check(x => x.QueryText);
 
         }
 

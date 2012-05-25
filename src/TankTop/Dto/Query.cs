@@ -4,12 +4,12 @@ namespace TankTop.Dto
 {
     public class Query
     {
-        public Query(string queryString)
+        public Query(string queryText)
         {
-            QueryString = queryString;
+            QueryText = queryText;
         }
 
-        public string QueryString { get; set; }
+        public string QueryText { get; set; }
         public int? Start { get; set; }
         public int? Len { get; set; }
         public int? Function { get; set; }

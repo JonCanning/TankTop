@@ -38,6 +38,13 @@ namespace TankTop.Extensions
             return document;
         }
 
+        public static Document AddVariable(this Document document, int key, DateTime dateTime)
+        {
+            document.Variables = document.Variables ?? new Dictionary<int, float>();
+            document.Variables.Add(key, dateTime.ToUnixEpoch());
+            return document;
+        }
+
         public static Document AddVariable(this Document document, int key, float value)
         {
             document.Variables = document.Variables ?? new Dictionary<int, float>();

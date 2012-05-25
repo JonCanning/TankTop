@@ -53,5 +53,16 @@ namespace TankTop.Extensions
         {
             return obj.SerializeToString().FromJson<IDictionary<string, string>>();
         }
+
+        public static float ToUnixEpoch(this DateTime dateTime)
+        {
+            var t = dateTime - new DateTime(1970, 1, 1);
+            return (float)t.TotalSeconds;
+        }
+
+        public static DateTime FromUnixEpoch(this float seconds)
+        {
+            return new DateTime(1970, 1, 1).AddSeconds(seconds);
+        }
     }
 }

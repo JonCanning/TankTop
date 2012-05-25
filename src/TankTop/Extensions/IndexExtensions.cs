@@ -1,4 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using ServiceStack.Text;
 using TankTop.Dto;
 
 namespace TankTop.Extensions
@@ -45,26 +49,33 @@ namespace TankTop.Extensions
             index.TankTopClient.DeleteFunction(index.Name, functionNumber);
         }
 
-        public static SearchResult Search(this Index index, Query query)
+        public static SearchResult Search(this Index index, string queryText)
         {
+            var query = new Query(queryText);
+            return index.Search(query);
+        }
+
+        public static SearchResult Search(this Index index, Query query, params string[] fieldsToSearch)
+        {
+            SetQueryTextFields(query, fieldsToSearch);
             return index.TankTopClient.Search(index.Name, query);
         }
 
-        public static SearchResult Search(this Index index, string queryString)
+        static void SetQueryTextFields(Query query, IEnumerable<string> fieldsToSearch)
         {
-            var search = new Query(queryString);
-            return index.TankTopClient.Search(index.Name, search);
+            if (fieldsToSearch.Any()) query.QueryText = string.Join(" OR ", fieldsToSearch.Select(x => "{0}:{1}".FormatWith(x, query.QueryText)));
         }
 
-        public static SearchResult<T> Search<T>(this Index index, Query query)
+        public static SearchResult<T> Search<T>(this Index index, Query query, params Expression<Func<T, object>>[] expressions)
         {
+            SetQueryTextFields(query, expressions.Select(x => x.PropertyName().ToLower()));
             return index.TankTopClient.Search<T>(index.Name, query);
         }
 
-        public static SearchResult<T> Search<T>(this Index index, string queryString)
+        public static SearchResult<T> Search<T>(this Index index, string queryText)
         {
-            var search = new Query(queryString);
-            return index.TankTopClient.Search<T>(index.Name, search);
+            var query = new Query(queryText);
+            return index.Search<T>(query);
         }
 
         public static void UpdateVariables(this Index index, string docId, IDictionary<int, float> variables)

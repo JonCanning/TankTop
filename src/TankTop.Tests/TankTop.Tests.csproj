@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TankTopClientFixtures\ExtensionTests.cs" />
     <Compile Include="TankTopClientFixtures\TankTopClientTests.cs" />
   </ItemGroup>
   <ItemGroup>
