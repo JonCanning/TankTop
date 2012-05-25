@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using TankTop.Dto;
 
 namespace TankTop.Extensions
@@ -47,6 +49,15 @@ namespace TankTop.Extensions
         {
             document.Categories = document.Categories ?? new Dictionary<string, string>();
             document.Categories.Add(key, value);
+            return document;
+        }
+
+        public static Document AddFieldFrom<T>(this Document document, T obj, Expression<Func<T, string>> expression) where T : class
+        {
+            var propertyName = expression.PropertyName().ToLower();
+            var property = expression.Compile().Invoke(obj);
+            var propertyValue = property.IsNull() ? string.Empty : property;
+            document.AddField(propertyName, propertyValue);
             return document;
         }
     }

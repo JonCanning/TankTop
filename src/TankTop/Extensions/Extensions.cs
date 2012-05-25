@@ -32,7 +32,7 @@ namespace TankTop.Extensions
             }
         }
 
-        static string PropertyName(this LambdaExpression expression)
+        public static string PropertyName(this LambdaExpression expression)
         {
             return (expression.Body is UnaryExpression ?
                 expression.Body.CastTo<UnaryExpression>().Operand.CastTo<MemberExpression>() :
