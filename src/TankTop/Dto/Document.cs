@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TankTop.Extensions;
 
 namespace TankTop.Dto
 {
@@ -14,4 +15,12 @@ namespace TankTop.Dto
         public IDictionary<string, string> Categories { get; set; }
         public IDictionary<int, float> Variables { get; set; }
     }
+
+    public class Document<T> : Document where T : class
+    {
+        public Document(string docId, T obj) : base(docId)
+        {
+            Fields = obj.ToDictionary();
+        }
+    } 
 }

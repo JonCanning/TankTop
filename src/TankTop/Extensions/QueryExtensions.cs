@@ -19,7 +19,7 @@ namespace TankTop.Extensions
                                         fetch_variables = query.FetchVariables.IsNull() ? null : query.FetchVariables.ToString().ToLower(),
                                         fetch_categories = query.FetchCategories.IsNull() ? null : query.FetchCategories.ToString().ToLower(),
                                         snippet = query.Snippet.IsNull() ? null : string.Join(",", query.Snippet),
-                                        category_filters = JsonSerializer.SerializeToString(query.CategoryFilters),
+                                        category_filters = query.CategoryFilters.SerializeToString(),
                                         match_any_field = query.MatchAnyField
                                     };
             var queryString = QueryStringSerializer.SerializeToString(searchQueryString);

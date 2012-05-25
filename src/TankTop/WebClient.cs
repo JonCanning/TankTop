@@ -73,7 +73,7 @@ namespace TankTop
             {
                 using (var outputStream = webRequest.GetRequestStream())
                 {
-                    var json = JsonSerializer.SerializeToString(request);
+                    var json = request.SerializeToString();
                     var bytes = Encoding.ASCII.GetBytes(json);
                     outputStream.Write(bytes, 0, bytes.Length);
                 }

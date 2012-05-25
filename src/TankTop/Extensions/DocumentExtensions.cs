@@ -30,6 +30,12 @@ namespace TankTop.Extensions
             return document;
         }
 
+        public static Document AddFields<T>(this Document document, T obj)
+        {
+            document.Fields = obj.ToDictionary();
+            return document;
+        }
+
         public static Document AddVariable(this Document document, int key, float value)
         {
             document.Variables = document.Variables ?? new Dictionary<int, float>();
