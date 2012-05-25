@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using ServiceStack.Text;
 using TankTop.Dto;
@@ -15,10 +18,10 @@ namespace TankTop.Extensions
                                         start = query.Start,
                                         len = query.Len,
                                         function = query.Function,
-                                        fetch = query.Fetch.IsNull() ? null : string.Join(",", query.Fetch),
+                                        fetch = query.Fetch.IsNull() ? null : String.Join(",", query.Fetch),
                                         fetch_variables = query.FetchVariables.IsNull() ? null : query.FetchVariables.ToString().ToLower(),
                                         fetch_categories = query.FetchCategories.IsNull() ? null : query.FetchCategories.ToString().ToLower(),
-                                        snippet = query.Snippet.IsNull() ? null : string.Join(",", query.Snippet),
+                                        snippet = query.Snippet.IsNull() ? null : String.Join(",", query.Snippet),
                                         category_filters = query.CategoryFilters.SerializeToString(),
                                         match_any_field = query.MatchAnyField
                                     };
@@ -28,7 +31,7 @@ namespace TankTop.Extensions
             {
                 foreach (var @var in query.Var)
                 {
-                    stringBuilder.Append("&var{0}={1}".FormatWith(@var.Key, @var.Value));
+                    stringBuilder.Append("&var{0}={1}".FormatWith(var.Key, var.Value));
                 }
             }
             if (query.VariableFilters.IsNotNull())
@@ -51,10 +54,15 @@ namespace TankTop.Extensions
         public static void Check(this Query query)
         {
             query.Check(x => x.QueryText);
-
         }
 
         public static Query WithCategories(this Query query)
+        {
+            query.FetchCategories = true;
+            return query;
+        }
+
+        public static Query<T> WithCategories<T>(this Query<T> query)
         {
             query.FetchCategories = true;
             return query;
@@ -66,13 +74,41 @@ namespace TankTop.Extensions
             return query;
         }
 
-        public static Query WithFields(this Query query, params string[] fields)
+        public static Query<T> WithVariables<T>(this Query<T> query)
+        {
+            query.FetchVariables = true;
+            return query;
+        }
+
+        public static Query WithReturnedFields(this Query query, params string[] fields)
         {
             query.Fetch = fields;
             return query;
         }
 
+        public static Query<T> WithReturnedFields<T>(this Query<T> query, params string[] fields)
+        {
+            query.Fetch = fields;
+            return query;
+        }
+
+        public static Query WithAllFields(this Query query)
+        {
+            return query.WithReturnedFields("*");
+        }
+
+        public static Query<T> WithAllFields<T>(this Query<T> query)
+        {
+            return query.WithReturnedFields("*");
+        }
+
         public static Query WithSnippetFromFields(this Query query, params string[] fields)
+        {
+            query.Snippet = fields;
+            return query;
+        }
+
+        public static Query<T> WithSnippetFromFields<T>(this Query<T> query, params string[] fields)
         {
             query.Snippet = fields;
             return query;
@@ -84,7 +120,19 @@ namespace TankTop.Extensions
             return query;
         }
 
+        public static Query<T> Skip<T>(this Query<T> query, int skip)
+        {
+            query.Start = skip;
+            return query;
+        }
+
         public static Query Take(this Query query, int take)
+        {
+            query.Len = take;
+            return query;
+        }
+
+        public static Query<T> Take<T>(this Query<T> query, int take)
         {
             query.Len = take;
             return query;
@@ -96,7 +144,20 @@ namespace TankTop.Extensions
             return query;
         }
 
+        public static Query<T> WithScoringFunction<T>(this Query<T> query, int functionNum)
+        {
+            query.Function = functionNum;
+            return query;
+        }
+
         public static Query WithQueryVariable(this Query query, int index, float value)
+        {
+            query.Var = query.Var ?? new Dictionary<int, float>();
+            query.Var.Add(index, value);
+            return query;
+        }
+
+        public static Query<T> WithQueryVariable<T>(this Query<T> query, int index, float value)
         {
             query.Var = query.Var ?? new Dictionary<int, float>();
             query.Var.Add(index, value);
@@ -110,10 +171,40 @@ namespace TankTop.Extensions
             return query;
         }
 
+        public static Query<T> WithCategoryFilter<T>(this Query<T> query, string category, params string[] matches)
+        {
+            query.CategoryFilters = query.CategoryFilters ?? new Dictionary<string, IEnumerable<string>>();
+            query.CategoryFilters.Add(category, matches);
+            return query;
+        }
+
         public static Query MatchAnyField(this Query query)
         {
             query.MatchAnyField = true;
             return query;
+        }
+
+        public static Query<T> MatchAnyField<T>(this Query<T> query)
+        {
+            query.MatchAnyField = true;
+            return query;
+        }
+
+        public static Query WithSearchFields(this Query query, params string[] fieldsToSearch)
+        {
+            if (fieldsToSearch.Any()) query.QueryText = QueryText(query, fieldsToSearch);
+            return query;
+        }
+
+        public static Query<T> WithSearchFields<T>(this Query<T> query, params Expression<Func<T, object>>[] fieldsToSearch)
+        {
+            query.QueryText = QueryText(query, fieldsToSearch.Select(x => x.PropertyName().ToLower()));
+            return query;
+        }
+
+        static string QueryText(Query query, IEnumerable<string> fieldsToSearch)
+        {
+            return String.Join(" OR ", fieldsToSearch.Select(x => "{0}:{1}".FormatWith(x, query.QueryText)));
         }
     }
 }

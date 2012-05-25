@@ -16,7 +16,7 @@ namespace TankTop.IntegrationTests.Indexing
             var doc1 = new Document("id1").AddField("key", "value").AddVariable(0, 2).AddVariable(1, 2);
             var doc2 = new Document("id2").AddField("key", "value").AddVariable(0, 1).AddVariable(1, 1);
             Index.AddDocuments(doc1, doc2);
-            var query = new Query("key:value").WithFields("*").WithScoringFunction(1).WithQueryVariable(0, 0).WithQueryVariable(1, 0);
+            var query = new Query("key:value").WithReturnedFields("*").WithScoringFunction(1).WithQueryVariable(0, 0).WithQueryVariable(1, 0);
             var searchResult = Index.Search(query);
             searchResult.Results.Count().Should().Be(2);
             searchResult.Results.First().DocId.Should().Be("id2");

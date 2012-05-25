@@ -14,8 +14,8 @@ namespace TankTop.Tests.TankTopClientFixtures
         {
             var index = new Index();
             index.TankTopClient = Substitute.For<ITankTopClient>();
-            var query = new Query("value");
-            index.Search(query, "field1", "field2");
+            var query = new Query("value").WithSearchFields("field1", "field2");
+            index.Search(query);
             query.QueryText.Should().Be("field1:value OR field2:value");
         }
 
@@ -24,8 +24,8 @@ namespace TankTop.Tests.TankTopClientFixtures
         {
             var index = new Index();
             index.TankTopClient = Substitute.For<ITankTopClient>();
-            var query = new Query("value");
-            index.Search<SearchTest>(query, x => x.Field1, x => x.Field2);
+            var query = new Query<SearchTest>("value").WithSearchFields(x => x.Field1, x => x.Field2);
+            index.Search(query);
             query.QueryText.Should().Be("field1:value OR field2:value");
         }
     }

@@ -52,30 +52,28 @@ namespace TankTop.Extensions
         public static SearchResult Search(this Index index, string queryText)
         {
             var query = new Query(queryText);
-            return index.Search(query);
-        }
-
-        public static SearchResult Search(this Index index, Query query, params string[] fieldsToSearch)
-        {
-            SetQueryTextFields(query, fieldsToSearch);
             return index.TankTopClient.Search(index.Name, query);
         }
 
-        static void SetQueryTextFields(Query query, IEnumerable<string> fieldsToSearch)
+        public static SearchResult Search(this Index index, Query query)
         {
-            if (fieldsToSearch.Any()) query.QueryText = string.Join(" OR ", fieldsToSearch.Select(x => "{0}:{1}".FormatWith(x, query.QueryText)));
+            return index.TankTopClient.Search(index.Name, query);
         }
 
-        public static SearchResult<T> Search<T>(this Index index, Query query, params Expression<Func<T, object>>[] expressions)
+        public static SearchResult<T> Search<T>(this Index index, Query<T> query)
         {
-            SetQueryTextFields(query, expressions.Select(x => x.PropertyName().ToLower()));
             return index.TankTopClient.Search<T>(index.Name, query);
+        }
+
+        public static SearchResult<T> Search<T>(this Index index, Query<T> query, params Action<T, JsonObject>[] mappingActions)
+        {
+            return index.TankTopClient.Search(index.Name, query, mappingActions);
         }
 
         public static SearchResult<T> Search<T>(this Index index, string queryText)
         {
-            var query = new Query(queryText);
-            return index.Search<T>(query);
+            var query = new Query<T>(queryText);
+            return index.Search(query);
         }
 
         public static void UpdateVariables(this Index index, string docId, IDictionary<int, float> variables)

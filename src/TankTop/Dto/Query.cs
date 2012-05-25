@@ -23,4 +23,9 @@ namespace TankTop.Dto
         public IDictionary<int, string> FunctionFilters { get; set; }
         public bool? MatchAnyField { get; set; }
     }
+
+    public class Query<T> : Query
+    {
+        public Query(string queryText) : base(queryText) {}
+    }
 }

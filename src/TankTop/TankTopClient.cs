@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -143,13 +144,13 @@ namespace TankTop
             return searchResult;
         }
 
-        public SearchResult<T> Search<T>(string indexName, Query query)
+        public SearchResult<T> Search<T>(string indexName, Query query, params Action<T, JsonObject>[] mappingActions)
         {
             var searchQueryString = SearchQueryString(indexName, query);
             var searchResult = webClient.Get<SearchResult<T>>(searchQueryString);
             if (searchResult.IsNotNull() && searchResult.Results.IsNotNull() && searchResult.Results.Any())
             {
-                var resultDocuments = JsonObject.Parse(webClient.Response).ArrayObjects("results").ConvertAll(x => ResultDocument(searchResult, x));
+                var resultDocuments = JsonObject.Parse(webClient.Response).ArrayObjects("results").ConvertAll(x => ResultDocument(searchResult, x, mappingActions));
                 searchResult.Results = resultDocuments;
             }
             return searchResult;
@@ -213,7 +214,7 @@ namespace TankTop
             return fields;
         }
 
-        ResultDocument<T> ResultDocument<T>(SearchResult<T> searchResult, JsonObject jsonObject)
+        ResultDocument<T> ResultDocument<T>(SearchResult<T> searchResult, JsonObject jsonObject, IEnumerable<Action<T, JsonObject>> mappingActions)
         {
             var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
 
@@ -222,7 +223,15 @@ namespace TankTop
             if (fields.Any())
             {
                 resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x)).FromDictionary<T>();
+                foreach (var field in fields)
+                {
+                    foreach (var mappingAction in mappingActions)
+                    {
+                        mappingAction(resultDocument.Fields, jsonObject);
+                    }
+                }
             }
+
             return resultDocument;
         }
 

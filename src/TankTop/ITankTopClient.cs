@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
+using ServiceStack.Text;
 using TankTop.Dto;
 
 namespace TankTop
@@ -24,7 +26,7 @@ namespace TankTop
         void UpdateVariables(string indexName, string docId, IDictionary<int, float> variables);
         void UpdateCategories(string indexName, string docId, IDictionary<string, string> categories);
         SearchResult Search(string indexName, Query query);
-        SearchResult<T> Search<T>(string indexName, Query query);
+        SearchResult<T> Search<T>(string indexName, Query query, params Action<T, JsonObject>[] mappingActions);
         void Promote(string indexName, string docId, string query);
     }
 }
