@@ -133,9 +133,20 @@ namespace TankTop
 
         public SearchResult Search(string indexName, Query query)
         {
-
             var searchQueryString = SearchQueryString(indexName, query);
             var searchResult = webClient.Get<SearchResult>(searchQueryString);
+            if (searchResult.IsNotNull() && searchResult.Results.IsNotNull() && searchResult.Results.Any())
+            {
+                var resultDocuments = JsonObject.Parse(webClient.Response).ArrayObjects("results").ConvertAll(x => ResultDocument(searchResult, x));
+                searchResult.Results = resultDocuments;
+            }
+            return searchResult;
+        }
+
+        public SearchResult<T> Search<T>(string indexName, Query query)
+        {
+            var searchQueryString = SearchQueryString(indexName, query);
+            var searchResult = webClient.Get<SearchResult<T>>(searchQueryString);
             if (searchResult.IsNotNull() && searchResult.Results.IsNotNull() && searchResult.Results.Any())
             {
                 var resultDocuments = JsonObject.Parse(webClient.Response).ArrayObjects("results").ConvertAll(x => ResultDocument(searchResult, x));
@@ -158,9 +169,8 @@ namespace TankTop
             return "{0}?{1}".FormatWith(resource, queryString);
         }
 
-        ResultDocument ResultDocument(SearchResult searchResult, JsonObject jsonObject)
+        IList<string> MapProperties(BaseResultDocument resultDocument, JsonObject jsonObject)
         {
-            var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
             var fields = jsonObject.Select(y => y.Key).Where(y => !ResultDocumentProperties.Contains(y)).ToList();
 
             const string variable = "variable_";
@@ -200,14 +210,31 @@ namespace TankTop
                 }
                 fields.RemoveAll(x => x.StartsWith(category));
             }
+            return fields;
+        }
+
+        ResultDocument<T> ResultDocument<T>(SearchResult<T> searchResult, JsonObject jsonObject)
+        {
+            var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
+
+            var fields = MapProperties(resultDocument, jsonObject);
 
             if (fields.Any())
             {
-                resultDocument.Fields = new Dictionary<string, string>();
-                foreach (var field in fields)
-                {
-                    resultDocument.Fields.Add(field, jsonObject.Get(field));
-                }
+                resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x)).FromDictionary<T>();
+            }
+            return resultDocument;
+        }
+
+        ResultDocument ResultDocument(SearchResult searchResult, JsonObject jsonObject)
+        {
+            var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
+
+            var fields = MapProperties(resultDocument, jsonObject);
+
+            if (fields.Any())
+            {
+                resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x));
             }
             return resultDocument;
         }

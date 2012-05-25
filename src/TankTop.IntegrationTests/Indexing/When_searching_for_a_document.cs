@@ -30,8 +30,8 @@ namespace TankTop.IntegrationTests.Indexing
             var document = new Document<TestClass>("id", new TestClass { Key = "value" });
             Index.AddDocument(document);
             var query = new Query("key:value").WithFields("*");
-            var searchResult = Index.Search(query);
-            var testClass = searchResult.Results.First().Fields.FromDictionary<TestClass>();
+            var searchResult = Index.Search<TestClass>(query);
+            var testClass = searchResult.Results.First().Fields;
             testClass.Key.Should().Be("value");
         }
     }

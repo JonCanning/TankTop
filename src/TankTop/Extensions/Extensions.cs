@@ -46,12 +46,12 @@ namespace TankTop.Extensions
 
         public static T FromDictionary<T>(this IDictionary<string, string> dictionary)
         {
-            return JsonSerializer.DeserializeFromString<T>(dictionary.SerializeToString());
+            return dictionary.SerializeToString().FromJson<T>();
         }
 
         public static IDictionary<string, string> ToDictionary<T>(this T obj)
         {
-            return JsonSerializer.DeserializeFromString<IDictionary<string, string>>(obj.SerializeToString());
+            return obj.SerializeToString().FromJson<IDictionary<string, string>>();
         }
     }
 }
