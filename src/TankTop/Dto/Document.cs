@@ -25,14 +25,13 @@ namespace TankTop.Dto
         public Document(string docId, T obj, params Expression<Func<T, object>>[] fieldsToIndex)
             : base(docId)
         {
-            if (!fieldsToIndex.Any())
+            if (fieldsToIndex.Any())
             {
-                throw new ArgumentNullException("fieldsToIndex");
-            }
-            foreach (var property in fieldsToIndex)
-            {
-                Fields = Fields ?? new Dictionary<string, string>();
-                Fields.Add(property.PropertyName().ToLower(), property.Compile().Invoke(obj).ToString());
+                foreach (var property in fieldsToIndex)
+                {
+                    Fields = Fields ?? new Dictionary<string, string>();
+                    Fields.Add(property.PropertyName().ToLower(), property.Compile().Invoke(obj).ToString());
+                }
             }
             Fields.Add("__object", obj.ToJson());
         }
