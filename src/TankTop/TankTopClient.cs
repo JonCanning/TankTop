@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -144,10 +143,10 @@ namespace TankTop
             return searchResult;
         }
 
-        public SearchResult<T> Search<T>(string indexName, Query query)
+        public SearchResult<T> Search<T>(string indexName, Query<T> query)
         {
-            if (query.Fetch.Count() == 1 && query.Fetch.First() != "*")
-                query.Fetch = query.Fetch.Concat(new[] {"__object"});
+            if (!query.Fetch.Contains("*"))
+                query.Fetch = query.Fetch.Concat(new[] { "__object" });
             var searchQueryString = SearchQueryString(indexName, query);
             var searchResult = webClient.Get<SearchResult<T>>(searchQueryString);
             if (searchResult.IsNotNull() && searchResult.Results.IsNotNull() && searchResult.Results.Any())
