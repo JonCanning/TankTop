@@ -144,13 +144,15 @@ namespace TankTop
             return searchResult;
         }
 
-        public SearchResult<T> Search<T>(string indexName, Query query, params Action<T, JsonObject>[] mappingActions)
+        public SearchResult<T> Search<T>(string indexName, Query query)
         {
+            if (query.Fetch.Count() == 1 && query.Fetch.First() != "*")
+                query.Fetch = query.Fetch.Concat(new[] {"__object"});
             var searchQueryString = SearchQueryString(indexName, query);
             var searchResult = webClient.Get<SearchResult<T>>(searchQueryString);
             if (searchResult.IsNotNull() && searchResult.Results.IsNotNull() && searchResult.Results.Any())
             {
-                var resultDocuments = JsonObject.Parse(webClient.Response).ArrayObjects("results").ConvertAll(x => ResultDocument(searchResult, x, mappingActions));
+                var resultDocuments = JsonObject.Parse(webClient.Response).ArrayObjects("results").ConvertAll(x => ResultDocument(searchResult, x));
                 searchResult.Results = resultDocuments;
             }
             return searchResult;
@@ -170,7 +172,7 @@ namespace TankTop
             return "{0}?{1}".FormatWith(resource, queryString);
         }
 
-        IList<string> MapProperties(BaseResultDocument resultDocument, JsonObject jsonObject)
+        IList<string> MapProperties(ResultDocument resultDocument, JsonObject jsonObject)
         {
             var fields = jsonObject.Select(y => y.Key).Where(y => !ResultDocumentProperties.Contains(y)).ToList();
 
@@ -214,33 +216,22 @@ namespace TankTop
             return fields;
         }
 
-        ResultDocument<T> ResultDocument<T>(SearchResult<T> searchResult, JsonObject jsonObject, IEnumerable<Action<T, JsonObject>> mappingActions)
+        ResultDocument<T> ResultDocument<T>(SearchResult<T> searchResult, JsonObject jsonObject)
         {
             var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
-
             var fields = MapProperties(resultDocument, jsonObject);
-
+            resultDocument.Obj = jsonObject.Get<T>("__object");
             if (fields.Any())
             {
-                resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x)).FromDictionary<T>();
-                foreach (var field in fields)
-                {
-                    foreach (var mappingAction in mappingActions)
-                    {
-                        mappingAction(resultDocument.Fields, jsonObject);
-                    }
-                }
+                resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x));
             }
-
             return resultDocument;
         }
 
         ResultDocument ResultDocument(SearchResult searchResult, JsonObject jsonObject)
         {
             var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
-
             var fields = MapProperties(resultDocument, jsonObject);
-
             if (fields.Any())
             {
                 resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x));

@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using ServiceStack.Text;
 using TankTop.Dto;
 
 namespace TankTop.Extensions
@@ -63,11 +59,6 @@ namespace TankTop.Extensions
         public static SearchResult<T> Search<T>(this Index index, Query<T> query)
         {
             return index.TankTopClient.Search<T>(index.Name, query);
-        }
-
-        public static SearchResult<T> Search<T>(this Index index, Query<T> query, params Action<T, JsonObject>[] mappingActions)
-        {
-            return index.TankTopClient.Search(index.Name, query, mappingActions);
         }
 
         public static SearchResult<T> Search<T>(this Index index, string queryText)

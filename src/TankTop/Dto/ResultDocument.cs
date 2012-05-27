@@ -2,18 +2,14 @@ using System.Collections.Generic;
 
 namespace TankTop.Dto
 {
-    public class ResultDocument : BaseResultDocument
+    public class ResultDocument<T> : ResultDocument
+    {
+        public T Obj { get; set; }
+    }
+
+    public class ResultDocument
     {
         public IDictionary<string, string> Fields { get; set; }
-    }
-
-    public class ResultDocument<T> : BaseResultDocument
-    {
-        public T Fields { get; set; }
-    }
-
-    public abstract class BaseResultDocument
-    {
         public string DocId { get; set; }
         public IDictionary<string, string> Categories { get; set; }
         public IList<float> Variables { get; set; }

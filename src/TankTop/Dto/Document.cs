@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using ServiceStack.Text;
 using TankTop.Extensions;
+using System.Linq;
 
 namespace TankTop.Dto
 {
@@ -18,9 +22,19 @@ namespace TankTop.Dto
 
     public class Document<T> : Document where T : class
     {
-        public Document(string docId, T obj) : base(docId)
+        public Document(string docId, T obj, params Expression<Func<T, object>>[] fieldsToIndex)
+            : base(docId)
         {
-            Fields = obj.ToDictionary();
+            if (!fieldsToIndex.Any())
+            {
+                throw new ArgumentNullException("fieldsToIndex");
+            }
+            foreach (var property in fieldsToIndex)
+            {
+                Fields = Fields ?? new Dictionary<string, string>();
+                Fields.Add(property.PropertyName().ToLower(), property.Compile().Invoke(obj).ToString());
+            }
+            Fields.Add("__object", obj.ToJson());
         }
-    } 
+    }
 }
