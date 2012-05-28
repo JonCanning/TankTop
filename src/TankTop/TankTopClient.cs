@@ -67,9 +67,7 @@ namespace TankTop
 
         public void AddDocument(string indexName, Document document)
         {
-            document.Check();
-            var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
-            webClient.Put(resource, document.ToSerializable());
+            AddDocuments(indexName, document);
         }
 
         public void AddDocuments(string indexName, params Document[] documents)
@@ -77,6 +75,22 @@ namespace TankTop
             foreach (var document in documents)
             {
                 document.Check();
+            }
+            var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
+            webClient.Put(resource, documents.Select(x => x.ToSerializable()));
+        }
+
+        public void AddDocument<T>(string indexName, Document<T> document) where T : class
+        {
+            AddDocuments(indexName, document);
+        }
+
+        public void AddDocuments<T>(string indexName, params Document<T>[] documents) where T : class
+        {
+            foreach (var document in documents)
+            {
+                document.Check();
+                document.Fields.Add("__object", document.Obj.ToJson());
             }
             var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
             webClient.Put(resource, documents.Select(x => x.ToSerializable()));
@@ -145,6 +159,7 @@ namespace TankTop
 
         public SearchResult<T> Search<T>(string indexName, Query<T> query)
         {
+            query.Fetch = query.Fetch ?? new string[0];
             if (!query.Fetch.Contains("*"))
                 query.Fetch = query.Fetch.Concat(new[] { "__object" });
             var searchQueryString = SearchQueryString(indexName, query);

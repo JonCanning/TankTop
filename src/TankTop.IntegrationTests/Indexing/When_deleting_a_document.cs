@@ -16,7 +16,7 @@ namespace TankTop.IntegrationTests.Indexing
             var document = new Document("1").AddField("key", "value");
             Index.AddDocument(document);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
-            var search = new Query("key:value").WithReturnedFields("*");
+            var search = new Query("key:value").WithFields("*");
             var searchResult = Index.Search(search);
             searchResult.Results.Count().Should().Be(1);
             Index.DeleteDocument("1");

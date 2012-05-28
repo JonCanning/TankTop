@@ -15,7 +15,7 @@ namespace TankTop.IntegrationTests.Indexing
             Index.AddFunction(1, "-km(query.var[0], query.var[1], doc.var[0], doc.var[1])");
             var doc = new Document("id").AddField("key", "value of the market is over two thousand pounds");
             Index.AddDocument(doc);
-            var query = new Query("key:market").WithReturnedFields("*").WithSnippetFromFields("key");
+            var query = new Query("key:market").WithFields("*").WithSnippetFromFields("key");
             var searchResult = Index.Search(query);
             searchResult.Results.First().Snippets["key"].Should().Contain("<b>market</b>");
         }

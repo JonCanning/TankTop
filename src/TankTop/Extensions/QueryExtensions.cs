@@ -64,8 +64,7 @@ namespace TankTop.Extensions
 
         public static Query<T> WithCategories<T>(this Query<T> query)
         {
-            query.FetchCategories = true;
-            return query;
+            return query.CastTo<Query>().WithCategories().CastTo<Query<T>>();
         }
 
         public static Query WithVariables(this Query query)
@@ -76,30 +75,29 @@ namespace TankTop.Extensions
 
         public static Query<T> WithVariables<T>(this Query<T> query)
         {
-            query.FetchVariables = true;
-            return query;
+            return query.CastTo<Query>().WithVariables().CastTo<Query<T>>();
         }
 
-        public static Query WithReturnedFields(this Query query, params string[] fields)
+        public static Query WithFields(this Query query, params string[] fields)
         {
+            query.Fetch = query.Fetch ?? new string[0];
             query.Fetch = fields;
             return query;
         }
 
-        public static Query<T> WithReturnedFields<T>(this Query<T> query, params string[] fields)
+        public static Query<T> WithFields<T>(this Query<T> query, params Expression<Func<T, object>>[] fields)
         {
-            query.Fetch = fields;
-            return query;
+            return query.WithFields(fields.Select(x => x.PropertyName().ToLower()).ToArray()).CastTo<Query<T>>();
         }
 
         public static Query WithAllFields(this Query query)
         {
-            return query.WithReturnedFields("*");
+            return query.WithFields("*");
         }
 
         public static Query<T> WithAllFields<T>(this Query<T> query)
         {
-            return query.WithReturnedFields("*");
+            return query.WithFields("*").CastTo<Query<T>>();
         }
 
         public static Query WithSnippetFromFields(this Query query, params string[] fields)
@@ -110,8 +108,7 @@ namespace TankTop.Extensions
 
         public static Query<T> WithSnippetFromFields<T>(this Query<T> query, params string[] fields)
         {
-            query.Snippet = fields;
-            return query;
+            return query.CastTo<Query>().WithSnippetFromFields(fields).CastTo<Query<T>>();
         }
 
         public static Query Skip(this Query query, int skip)
@@ -122,8 +119,7 @@ namespace TankTop.Extensions
 
         public static Query<T> Skip<T>(this Query<T> query, int skip)
         {
-            query.Start = skip;
-            return query;
+            return query.CastTo<Query>().Skip(skip).CastTo<Query<T>>();
         }
 
         public static Query Take(this Query query, int take)
@@ -134,8 +130,7 @@ namespace TankTop.Extensions
 
         public static Query<T> Take<T>(this Query<T> query, int take)
         {
-            query.Len = take;
-            return query;
+            return query.CastTo<Query>().Take(take).CastTo<Query<T>>();
         }
 
         public static Query WithScoringFunction(this Query query, int functionNum)
@@ -146,8 +141,7 @@ namespace TankTop.Extensions
 
         public static Query<T> WithScoringFunction<T>(this Query<T> query, int functionNum)
         {
-            query.Function = functionNum;
-            return query;
+            return query.CastTo<Query>().WithScoringFunction(functionNum).CastTo<Query<T>>();
         }
 
         public static Query WithQueryVariable(this Query query, int index, float value)
@@ -159,9 +153,7 @@ namespace TankTop.Extensions
 
         public static Query<T> WithQueryVariable<T>(this Query<T> query, int index, float value)
         {
-            query.Var = query.Var ?? new Dictionary<int, float>();
-            query.Var.Add(index, value);
-            return query;
+            return query.CastTo<Query>().WithQueryVariable(index, value).CastTo<Query<T>>();
         }
 
         public static Query WithCategoryFilter(this Query query, string category, params string[] matches)
@@ -173,9 +165,7 @@ namespace TankTop.Extensions
 
         public static Query<T> WithCategoryFilter<T>(this Query<T> query, string category, params string[] matches)
         {
-            query.CategoryFilters = query.CategoryFilters ?? new Dictionary<string, IEnumerable<string>>();
-            query.CategoryFilters.Add(category, matches);
-            return query;
+            return query.CastTo<Query>().WithCategoryFilter(category, matches).CastTo<Query<T>>();
         }
 
         public static Query MatchAnyField(this Query query)
@@ -186,8 +176,7 @@ namespace TankTop.Extensions
 
         public static Query<T> MatchAnyField<T>(this Query<T> query)
         {
-            query.MatchAnyField = true;
-            return query;
+            return query.CastTo<Query>().MatchAnyField().CastTo<Query<T>>();
         }
 
         public static Query WithSearchFields(this Query query, params string[] fieldsToSearch)

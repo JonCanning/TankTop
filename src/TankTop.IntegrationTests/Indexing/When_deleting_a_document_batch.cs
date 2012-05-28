@@ -19,7 +19,7 @@ namespace TankTop.IntegrationTests.Indexing
                                   };
             Index.AddDocuments(documents);
             TankTopClient.StatusCode.Should().Be(HttpStatusCode.OK);
-            var search = new Query("key:value").WithReturnedFields("*");
+            var search = new Query("key:value").WithFields("*");
             var searchResult = Index.Search(search);
             searchResult.Results.Count().Should().Be(2);
 

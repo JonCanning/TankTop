@@ -12,7 +12,7 @@ namespace TankTop.IntegrationTests.Indexing
         [Test]
         public void Then_document_should_be_returned()
         {
-            var document = new Document<TestClass>("id", new TestClass { Key = "value" }, x => x.Key);
+            var document = new Document<TestClass>("id", new TestClass { Key = "value" }).AddAllFields();
             Index.AddDocument(document);
             var query = new Query<TestClass>("value").WithSearchFields(x => x.Foo, x => x.Key).WithAllFields();
             var searchResult = Index.Search(query);

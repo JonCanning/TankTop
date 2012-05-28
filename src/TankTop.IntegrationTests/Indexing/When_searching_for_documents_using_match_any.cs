@@ -14,7 +14,7 @@ namespace TankTop.IntegrationTests.Indexing
         {
             var document = new Document("id").AddField("key", "value");
             Index.AddDocument(document);
-            var search = new Query("value").WithReturnedFields("key").MatchAnyField();
+            var search = new Query("value").WithFields("key").MatchAnyField();
             var searchResult = Index.Search(search);
             searchResult.Results.Count().Should().Be(1);
             searchResult.Results.First().Fields["key"].Should().Be("value");

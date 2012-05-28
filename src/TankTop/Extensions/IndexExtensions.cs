@@ -5,12 +5,27 @@ namespace TankTop.Extensions
 {
     public static class IndexExtensions
     {
+        public static void Delete(this Index index)
+        {
+            index.TankTopClient.DeleteIndex(index.Name);
+        }
+
         public static void AddDocument(this Index index, Document document)
         {
             index.TankTopClient.AddDocument(index.Name, document);
         }
 
         public static void AddDocuments(this Index index, params Document[] documents)
+        {
+            index.TankTopClient.AddDocuments(index.Name, documents);
+        }
+
+        public static void AddDocument<T>(this Index index, Document<T> document) where T : class
+        {
+            index.TankTopClient.AddDocument(index.Name, document);
+        }
+
+        public static void AddDocuments<T>(this Index index, params Document<T>[] documents) where T : class
         {
             index.TankTopClient.AddDocuments(index.Name, documents);
         }
@@ -58,7 +73,7 @@ namespace TankTop.Extensions
 
         public static SearchResult<T> Search<T>(this Index index, Query<T> query)
         {
-            return index.TankTopClient.Search<T>(index.Name, query);
+            return index.TankTopClient.Search(index.Name, query);
         }
 
         public static SearchResult<T> Search<T>(this Index index, string queryText)

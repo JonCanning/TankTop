@@ -36,6 +36,9 @@
     <Reference Include="FluentAssertions">
       <HintPath>..\..\packages\FluentAssertions.1.7.1.1\Lib\net40\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\..\packages\NSubstitute.1.4.0.0\lib\NET40\NSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -56,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Categories\When_adding_categories_to_a_document.cs" />
+    <Compile Include="Documentation\StockItem.cs" />
+    <Compile Include="Documentation\When_demonstrating_TankTop.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Indexing\When_deleting_a_document.cs" />
     <Compile Include="Indexing\When_deleting_a_document_batch.cs" />
@@ -90,6 +95,7 @@
   <ItemGroup>
     <Content Include="providers.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

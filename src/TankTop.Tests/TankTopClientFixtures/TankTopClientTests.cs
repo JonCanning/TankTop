@@ -91,7 +91,7 @@ namespace TankTop.Tests.TankTopClientFixtures
             document.AddField("key", "value");
             index.AddDocument(document);
             var resource = Resources.Indexes_Name_Docs.FormatWith(index.Name);
-            webClient.Received().Put(resource, document.ToSerializable());
+            webClient.Received().Put(resource, Arg.Is<IEnumerable<object>>(x => x.SequenceEqual(new[] { document }.Select(y => y.ToSerializable()))));
         }
 
         [Test]

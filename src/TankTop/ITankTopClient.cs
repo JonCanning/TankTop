@@ -18,6 +18,8 @@ namespace TankTop
 
         void AddDocument(string indexName, Document document);
         void AddDocuments(string indexName, params Document[] documents);
+        void AddDocument<T>(string indexName, Document<T> document) where T : class;
+        void AddDocuments<T>(string indexName, params Document<T>[] documents) where T : class;
         void DeleteDocument(string indexName, string docId);
         void DeleteDocuments(string indexName, params string[] docIds);
         void DeleteDocuments(string indexName, Query query);
