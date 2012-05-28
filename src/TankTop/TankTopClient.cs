@@ -12,14 +12,14 @@ namespace TankTop
         readonly IWebClient webClient;
         static readonly IEnumerable<string> ResultDocumentProperties = typeof(ResultDocument).GetProperties().Select(x => x.Name.ToLower());
 
+        public TankTopClient(string baseAddress) : this(new WebClient(baseAddress)) { }
+
         public TankTopClient(IWebClient webClient)
         {
             this.webClient = webClient;
             JsConfig.ExcludeTypeInfo = true;
             JsConfig.EmitCamelCaseNames = true;
         }
-
-        public TankTopClient(string baseAddress) : this(new WebClient(baseAddress)) { }
 
         public HttpStatusCode StatusCode
         {
