@@ -71,7 +71,7 @@ The same workflow using TankTops generic syntax
 			
 As you can see, it cuts out all the object mapping and gives a more ORM like experience
 			
-The limitations I discovered with IndexTankDotNet was unit testing and mocking, so TankTop has a public interface, ITankTopClient, that can be mocked. Here I'm using NSubstitute:
+The limitations I discovered with IndexTankDotNet were unit testing and mocking, so TankTop has a public interface, ITankTopClient, that can be mocked. Here I'm using NSubstitute:
 
             var tankTopClient = Substitute.For<ITankTopClient>();
             var index = new Index { Name = "MyIndex", TankTopClient = tankTopClient };
