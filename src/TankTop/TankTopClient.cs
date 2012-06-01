@@ -90,7 +90,7 @@ namespace TankTop
             foreach (var document in documents)
             {
                 document.Check();
-                document.Fields.Add("__object", document.Obj.ToJson());
+                document.Fields.Add("__obj", document.Obj.ToJson());
             }
             var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
             webClient.Put(resource, documents.Select(x => x.ToSerializable()));
@@ -161,7 +161,7 @@ namespace TankTop
         {
             query.Fetch = query.Fetch ?? new string[0];
             if (!query.Fetch.Contains("*"))
-                query.Fetch = query.Fetch.Concat(new[] { "__object" });
+                query.Fetch = query.Fetch.Concat(new[] { "__obj" });
             var searchQueryString = SearchQueryString(indexName, query);
             var searchResult = webClient.Get<SearchResult<T>>(searchQueryString);
             if (searchResult.IsNotNull() && searchResult.Results.IsNotNull() && searchResult.Results.Any())
@@ -234,7 +234,7 @@ namespace TankTop
         {
             var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
             var fields = MapProperties(resultDocument, jsonObject);
-            resultDocument.Obj = jsonObject.Get<T>("__object");
+            resultDocument.Obj = jsonObject.Get<T>("__obj");
             if (fields.Any())
             {
                 resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x));
