@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using ServiceStack.Text;
 
 namespace TankTop.Extensions
 {
@@ -42,16 +40,6 @@ namespace TankTop.Extensions
         public static T CastTo<T>(this object obj)
         {
             return (T)obj;
-        }
-
-        public static T FromDictionary<T>(this IDictionary<string, string> dictionary)
-        {
-            return dictionary.SerializeToString().FromJson<T>();
-        }
-
-        public static IDictionary<string, string> ToDictionary<T>(this T obj)
-        {
-            return obj.SerializeToString().FromJson<IDictionary<string, string>>();
         }
 
         public static float ToUnixEpoch(this DateTime dateTime)
