@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace TankTop.Extensions
 {
-    public static class Extensions
+    static class Extensions
     {
         public static bool IsNull(this object obj)
         {
@@ -46,11 +46,6 @@ namespace TankTop.Extensions
         {
             var t = dateTime - new DateTime(1970, 1, 1);
             return (float)t.TotalSeconds;
-        }
-
-        public static DateTime FromUnixEpoch(this float seconds)
-        {
-            return new DateTime(1970, 1, 1).AddSeconds(seconds);
         }
     }
 }
