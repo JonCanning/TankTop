@@ -6,17 +6,17 @@ namespace TankTop.Extensions
 {
     static class Extensions
     {
-        public static bool IsNull(this object obj)
+        internal static bool IsNull(this object obj)
         {
             return obj == null;
         }
 
-        public static bool IsNotNull(this object obj)
+        internal static bool IsNotNull(this object obj)
         {
             return !obj.IsNull();
         }
 
-        public static void Check<T, TProperty>(this T obj, Expression<Func<T, TProperty>> expression, params Predicate<TProperty>[] predicates)
+        internal static void Check<T, TProperty>(this T obj, Expression<Func<T, TProperty>> expression, params Predicate<TProperty>[] predicates)
         {
             var propertyName = expression.PropertyName();
             var property = expression.Compile().Invoke(obj);
@@ -30,19 +30,19 @@ namespace TankTop.Extensions
             }
         }
 
-        public static string PropertyName(this LambdaExpression expression)
+        internal static string PropertyName(this LambdaExpression expression)
         {
             return (expression.Body is UnaryExpression ?
                 expression.Body.CastTo<UnaryExpression>().Operand.CastTo<MemberExpression>() :
                 expression.Body.CastTo<MemberExpression>()).Member.Name;
         }
 
-        public static T CastTo<T>(this object obj)
+        internal static T CastTo<T>(this object obj)
         {
             return (T)obj;
         }
 
-        public static float ToUnixEpoch(this DateTime dateTime)
+        internal static float ToUnixEpoch(this DateTime dateTime)
         {
             var t = dateTime - new DateTime(1970, 1, 1);
             return (float)t.TotalSeconds;
