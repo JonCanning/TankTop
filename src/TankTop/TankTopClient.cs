@@ -209,7 +209,7 @@ namespace TankTop
                 foreach (var field in fields.Where(x => x.StartsWith(category)))
                 {
                     var categoryName = field.Replace(category, string.Empty);
-                    var categoryValue = jsonObject.Get<string>(field);
+                    var categoryValue = jsonObject.Get(field);
                     resultDocument.Categories.Add(categoryName, categoryValue);
                 }
                 fields.RemoveAll(x => x.StartsWith(category));
@@ -222,7 +222,7 @@ namespace TankTop
                 foreach (var field in fields.Where(x => x.StartsWith(snippet)))
                 {
                     var snippetName = field.Replace(snippet, string.Empty);
-                    var snippetValue = jsonObject.Get<string>(field);
+                    var snippetValue = jsonObject.Get(field);
                     resultDocument.Snippets.Add(snippetName, snippetValue);
                 }
                 fields.RemoveAll(x => x.StartsWith(category));

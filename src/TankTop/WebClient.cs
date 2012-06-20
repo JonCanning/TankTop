@@ -51,9 +51,10 @@ namespace TankTop
         T Send<T>(string resource, string method, object request = null)
         {
             using (var webResponse = HttpWebResponse(resource, method, request))
+            using (var responseStream = webResponse.GetResponseStream())
+            using (var streamReader = new StreamReader(responseStream))
             {
-                var responseStream = webResponse.GetResponseStream();
-                var json = new StreamReader(responseStream).ReadToEnd();
+                var json = streamReader.ReadToEnd();
                 Response = json;
                 return JsonSerializer.DeserializeFromString<T>(json);
             }
