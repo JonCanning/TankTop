@@ -3,6 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TankTop.Dto;
 using TankTop.Extensions;
+using ServiceStack.Text;
 
 namespace TankTop.IntegrationTests.Indexing
 {

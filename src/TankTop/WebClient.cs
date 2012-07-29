@@ -67,7 +67,7 @@ namespace TankTop
 
         HttpWebResponse HttpWebResponse(string resource, string method, object request)
         {
-            var webRequest = WebRequest.Create(baseAddress + resource).CastTo<HttpWebRequest>();
+            var webRequest = WebRequest.Create(baseAddress + resource).CastTo<HttpWebRequest>();    
             webRequest.Method = method;
             webRequest.Headers = webHeaderCollection;
             if (request != null)

@@ -48,9 +48,7 @@ namespace TankTop
             var resource = Resources.Indexes_Name.FormatWith(indexName);
             var index = webClient.Put<Index>(resource, new { public_search = publicSearch });
             if (webClient.StatusCode == HttpStatusCode.NoContent)
-            {
                 index = webClient.Get<Index>(resource);
-            }
             index.Name = indexName;
             index.TankTopClient = this;
             return index;
@@ -90,7 +88,7 @@ namespace TankTop
             foreach (var document in documents)
             {
                 document.Check();
-                document.Fields.Add("__obj", document.Obj.ToJson());
+                document.Fields.Add("__obj", document.Obj.ToJsv().ToBase64());
             }
             var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
             webClient.Put(resource, documents.Select(x => x.ToSerializable()));
@@ -222,7 +220,7 @@ namespace TankTop
                 foreach (var field in fields.Where(x => x.StartsWith(snippet)))
                 {
                     var snippetName = field.Replace(snippet, string.Empty);
-                    var snippetValue = jsonObject.Get(field);
+                    var snippetValue = jsonObject.GetUnescaped(field);
                     resultDocument.Snippets.Add(snippetName, snippetValue);
                 }
                 fields.RemoveAll(x => x.StartsWith(category));
@@ -233,24 +231,23 @@ namespace TankTop
         ResultDocument<T> ResultDocument<T>(SearchResult<T> searchResult, JsonObject jsonObject)
         {
             var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
-            var fields = MapProperties(resultDocument, jsonObject);
-            resultDocument.Obj = jsonObject.Get<T>("__obj");
-            if (fields.Any())
-            {
-                resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x));
-            }
+            MapFields(resultDocument, jsonObject);
+            resultDocument.Obj = jsonObject.Get("__obj").FromBase64().FromJsv<T>();
             return resultDocument;
         }
 
         ResultDocument ResultDocument(SearchResult searchResult, JsonObject jsonObject)
         {
             var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
+            MapFields(resultDocument, jsonObject);
+            return resultDocument;
+        }
+
+        void MapFields(ResultDocument resultDocument, JsonObject jsonObject)
+        {
             var fields = MapProperties(resultDocument, jsonObject);
             if (fields.Any())
-            {
                 resultDocument.Fields = fields.ToDictionary(x => x, x => jsonObject.Get(x));
-            }
-            return resultDocument;
         }
     }
 }

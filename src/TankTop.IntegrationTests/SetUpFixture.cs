@@ -6,7 +6,8 @@ namespace TankTop.IntegrationTests
     [SetUpFixture]
     class SetUpFixture
     {
-        public static readonly TankTopClient TankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
+       // public static readonly TankTopClient TankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
+        public static readonly TankTopClient TankTopClient = new TankTopClient("http://:nygutusevypy@jerate.api.indexden.com");
 
         public static Index Index;
 
@@ -14,8 +15,7 @@ namespace TankTop.IntegrationTests
         public void SetUp()
         {
             DeleteIndex();
-            Index = TankTopClient.CreateIndex("TankTop");
-
+            Index = TankTopClient.CreateIndex("TankTop", true);
         }
 
         [TearDown]
@@ -24,9 +24,9 @@ namespace TankTop.IntegrationTests
             DeleteIndex();
         }
 
-        void DeleteIndex()
+        static void DeleteIndex()
         {
-            Extensions.Try(() => TankTopClient.DeleteIndex("TankTop"));
+            TankTopClient.Try(x => x.DeleteIndex("TankTop"));
         }
     }
 }

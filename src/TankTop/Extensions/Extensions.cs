@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using ServiceStack.Text;
 
 namespace TankTop.Extensions
 {
@@ -46,6 +48,22 @@ namespace TankTop.Extensions
         {
             var t = dateTime - new DateTime(1970, 1, 1);
             return (float)t.TotalSeconds;
+        }
+
+        public static string ToBase64(this string str)
+        {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
+        }
+
+        public static string FromBase64(this string str)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(str));
+        }
+
+        public static string GetUnescaped(this JsonObject jsonObject, string key)
+        {
+            var value = jsonObject.Get(key);
+            return string.IsNullOrWhiteSpace(value) ? value : value.Replace("\\", string.Empty);
         }
     }
 }

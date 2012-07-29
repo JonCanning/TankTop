@@ -10,6 +10,16 @@ namespace TankTop.IntegrationTests.Documentation
     [TestFixture]
     class When_demonstrating_TankTop
     {
+        TankTopClient tankTopClient;
+        Index index;
+
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            tankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
+            index = tankTopClient.CreateIndex("Stock");
+        }
+
         [Test]
         public void Index_a_document_using_non_generic_syntax()
         {
@@ -24,9 +34,6 @@ namespace TankTop.IntegrationTests.Documentation
                                                                                 {"PriceRange", "11-20"}
                                                                             }
                             };
-
-            var tankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
-            var index = tankTopClient.CreateIndex("Stock");
 
             var document = new Document(stockItem.Id.ToString())
                 .AddField("title", stockItem.Title)
@@ -70,9 +77,6 @@ namespace TankTop.IntegrationTests.Documentation
                                                                             }
                             };
 
-            var tankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
-            var index = tankTopClient.CreateIndex("Stock");
-
             var document = new Document<StockItem>(stockItem.Id.ToString(), stockItem)
                 .AddFields(x => x.Title, x => x.Description)
                 .AddVariable(0, stockItem.Price)
@@ -94,11 +98,17 @@ namespace TankTop.IntegrationTests.Documentation
         [Test]
         public void Then_mock_ITankTopClient()
         {
-            var tankTopClient = Substitute.For<ITankTopClient>();
-            var index = new Index { Name = "MyIndex", TankTopClient = tankTopClient };
+            var mockTankTopClient = Substitute.For<ITankTopClient>();
+            var myIndex = new Index { Name = "MyIndex", TankTopClient = tankTopClient };
             var document = new Document("id").AddField("key", "value");
-            index.AddDocument(document);
-            tankTopClient.Received().AddDocument("MyIndex", document);
+            myIndex.AddDocument(document);
+            mockTankTopClient.Received().AddDocument("MyIndex", document);
+        }
+
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            index.Delete();
         }
     }
 }
