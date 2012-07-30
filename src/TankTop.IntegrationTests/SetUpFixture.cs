@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using TankTop.Dto;
+using TankTop.Extensions;
 
 namespace TankTop.IntegrationTests
 {
@@ -13,8 +14,8 @@ namespace TankTop.IntegrationTests
         [SetUp]
         public void SetUp()
         {
-            DeleteIndex();
             Index = TankTopClient.CreateIndex("TankTop", true);
+            DeleteIndex();
         }
 
         [TearDown]
@@ -23,9 +24,9 @@ namespace TankTop.IntegrationTests
             DeleteIndex();
         }
 
-        static void DeleteIndex()
+        void DeleteIndex()
         {
-            TankTopClient.Try(x => x.DeleteIndex("TankTop"));
+            Index.DeleteDocuments(new Query("key:v*"));
         }
     }
 }

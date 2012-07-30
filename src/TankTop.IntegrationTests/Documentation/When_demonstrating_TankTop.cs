@@ -110,7 +110,7 @@ namespace TankTop.IntegrationTests.Documentation
         [TestFixtureTearDown]
         public void TestFixtureTearDown()
         {
-            index.Delete();
+            index.DeleteDocuments("1");
         }
     }
 }
