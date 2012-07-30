@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NSubstitute;
 using NUnit.Framework;
 using TankTop.Dto;
@@ -18,6 +19,11 @@ namespace TankTop.IntegrationTests.Documentation
         {
             tankTopClient = new TankTopClient("http://:begyhuzatybu@vehehu.api.indexden.com");
             index = tankTopClient.CreateIndex("Stock");
+            while (!index.Started)
+            {
+                Thread.Sleep(1000);
+                index = tankTopClient.GetIndex("Stock");
+            }
         }
 
         [Test]
@@ -58,8 +64,6 @@ namespace TankTop.IntegrationTests.Documentation
 
             Assert.AreEqual("Edam", resultStockItem.Title);
             Assert.AreEqual(12.34, resultStockItem.Price);
-
-            index.Delete();
         }
 
         [Test]
@@ -91,15 +95,13 @@ namespace TankTop.IntegrationTests.Documentation
 
             Assert.AreEqual("Edam", resultStockItem.Title);
             Assert.AreEqual(12.34, resultStockItem.Price);
-
-            index.Delete();
         }
 
         [Test]
         public void Then_mock_ITankTopClient()
         {
             var mockTankTopClient = Substitute.For<ITankTopClient>();
-            var myIndex = new Index { Name = "MyIndex", TankTopClient = tankTopClient };
+            var myIndex = new Index { Name = "MyIndex", TankTopClient = mockTankTopClient };
             var document = new Document("id").AddField("key", "value");
             myIndex.AddDocument(document);
             mockTankTopClient.Received().AddDocument("MyIndex", document);
