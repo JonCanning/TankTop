@@ -59,11 +59,5 @@ namespace TankTop.Extensions
         {
             return Encoding.UTF8.GetString(Convert.FromBase64String(str));
         }
-
-        public static string GetUnescaped(this JsonObject jsonObject, string key)
-        {
-            var value = jsonObject.Get(key);
-            return string.IsNullOrWhiteSpace(value) ? value : value.Replace("\\", string.Empty);
-        }
     }
 }

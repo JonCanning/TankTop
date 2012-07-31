@@ -220,7 +220,7 @@ namespace TankTop
                 foreach (var field in fields.Where(x => x.StartsWith(snippet)))
                 {
                     var snippetName = field.Replace(snippet, string.Empty);
-                    var snippetValue = jsonObject.GetUnescaped(field);
+                    var snippetValue = jsonObject.Get(field);
                     resultDocument.Snippets.Add(snippetName, snippetValue);
                 }
                 fields.RemoveAll(x => x.StartsWith(category));
