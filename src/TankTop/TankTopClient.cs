@@ -88,7 +88,7 @@ namespace TankTop
             foreach (var document in documents)
             {
                 document.Check();
-                document.Fields.Add("__obj", document.Obj.ToJsv().ToBase64());
+                document.Fields.Add("__obj", document.Obj.ToJsv().HtmlEncode());
             }
             var resource = Resources.Indexes_Name_Docs.FormatWith(indexName);
             webClient.Put(resource, documents.Select(x => x.ToSerializable()));
@@ -232,7 +232,7 @@ namespace TankTop
         {
             var resultDocument = searchResult.Results.Single(y => y.DocId == jsonObject.Get("docid"));
             MapFields(resultDocument, jsonObject);
-            resultDocument.Obj = jsonObject.Get("__obj").FromBase64().FromJsv<T>();
+            resultDocument.Obj = jsonObject.Get("__obj").HtmlDecode().FromJsv<T>();
             return resultDocument;
         }
 

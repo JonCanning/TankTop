@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Web;
 using ServiceStack.Text;
 
 namespace TankTop.Extensions
@@ -50,14 +51,14 @@ namespace TankTop.Extensions
             return (float)t.TotalSeconds;
         }
 
-        public static string ToBase64(this string str)
+        public static string HtmlEncode(this string str)
         {
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
+            return HttpUtility.HtmlEncode(str);
         }
 
-        public static string FromBase64(this string str)
+        public static string HtmlDecode(this string str)
         {
-            return Encoding.UTF8.GetString(Convert.FromBase64String(str));
+            return HttpUtility.HtmlDecode(str);
         }
     }
 }
