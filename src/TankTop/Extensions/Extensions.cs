@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Web;
-using ServiceStack.Text;
 
 namespace TankTop.Extensions
 {
@@ -19,7 +17,8 @@ namespace TankTop.Extensions
             return !obj.IsNull();
         }
 
-        public static void Check<T, TProperty>(this T obj, Expression<Func<T, TProperty>> expression, params Predicate<TProperty>[] predicates)
+        public static void Check<T, TProperty>(this T obj, Expression<Func<T, TProperty>> expression,
+                                               params Predicate<TProperty>[] predicates)
         {
             var propertyName = expression.PropertyName();
             var property = expression.Compile().Invoke(obj);
@@ -35,9 +34,9 @@ namespace TankTop.Extensions
 
         public static string PropertyName(this LambdaExpression expression)
         {
-            return (expression.Body is UnaryExpression ?
-                expression.Body.CastTo<UnaryExpression>().Operand.CastTo<MemberExpression>() :
-                expression.Body.CastTo<MemberExpression>()).Member.Name;
+            return (expression.Body is UnaryExpression
+                        ? expression.Body.CastTo<UnaryExpression>().Operand.CastTo<MemberExpression>()
+                        : expression.Body.CastTo<MemberExpression>()).Member.Name;
         }
 
         public static T CastTo<T>(this object obj)

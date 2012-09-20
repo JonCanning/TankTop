@@ -25,7 +25,7 @@ namespace TankTop.Extensions
                                         category_filters = query.CategoryFilters.SerializeToString(),
                                         match_any_field = query.MatchAnyField
                                     };
-            var queryString = QueryStringSerializer.SerializeToString(searchQueryString);
+            var queryString = QueryStringSerializer.SerializeToString(searchQueryString).Replace("\"", string.Empty);
             var stringBuilder = new StringBuilder(queryString);
             if (query.Var.IsNotNull())
             {

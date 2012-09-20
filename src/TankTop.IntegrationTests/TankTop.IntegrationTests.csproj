@@ -73,6 +73,7 @@
     <Compile Include="Indexing\When_searching_and_ordering_with_function.cs" />
     <Compile Include="Indexing\When_searching_for_a_document.cs" />
     <Compile Include="Indexing\When_searching_for_a_document_and_converting_fields.cs" />
+    <Compile Include="Indexing\When_searching_for_a_document_with_multiple_fields.cs" />
     <Compile Include="Indexing\When_searching_for_documents_using_match_any.cs" />
     <Compile Include="Indexing\When_searching_with_snippet.cs" />
     <Compile Include="IndexManagement\When_reading_an_index.cs" />
