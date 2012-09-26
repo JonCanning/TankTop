@@ -31,7 +31,7 @@ namespace TankTop.Extensions
             {
                 foreach (var @var in query.Var)
                 {
-                    stringBuilder.Append("&var{0}={1}".FormatWith(var.Key, var.Value));
+                    stringBuilder.Append("&var{0}={1}".FormatWith(var.Key, var.Value.ToString().UrlEncode()));
                 }
             }
             if (query.VariableFilters.IsNotNull())
