@@ -1,8 +1,8 @@
+using ServiceStack.Text;
 using System;
 using System.IO;
 using System.Net;
 using System.Text;
-using ServiceStack.Text;
 using TankTop.Extensions;
 
 namespace TankTop
@@ -67,7 +67,7 @@ namespace TankTop
 
         HttpWebResponse HttpWebResponse(string resource, string method, object request)
         {
-            var webRequest = WebRequest.Create(baseAddress + resource).CastTo<HttpWebRequest>();    
+            var webRequest = WebRequest.Create(baseAddress + resource).CastTo<HttpWebRequest>();
             webRequest.Method = method;
             webRequest.Headers = webHeaderCollection;
             if (request != null)
@@ -75,7 +75,7 @@ namespace TankTop
                 using (var outputStream = webRequest.GetRequestStream())
                 {
                     var json = request.SerializeToString();
-                    var bytes = Encoding.ASCII.GetBytes(json);
+                    var bytes = Encoding.UTF8.GetBytes(json);
                     outputStream.Write(bytes, 0, bytes.Length);
                 }
             }

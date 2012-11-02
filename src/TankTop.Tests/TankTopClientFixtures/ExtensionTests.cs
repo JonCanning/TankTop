@@ -35,8 +35,8 @@ namespace TankTop.Tests.TankTopClientFixtures
         [Test]
         public void When_searching_and_Var_requires_url_encoding()
         {
-            var query = new Query("test:Something").WithQueryVariable(0, DateTime.Now.Ticks/TimeSpan.TicksPerSecond);
-            query.ToQueryString().Should().Be("q=test%3aSomething&var0=6.348428E%2b10");
+            var query = new Query("test:Something").WithQueryVariable(0, new DateTime(2000, 1, 1).Ticks/TimeSpan.TicksPerSecond);
+            query.ToQueryString().Should().Be("q=test%3aSomething&var0=6.308228E%2b10");
         }
     }
 
